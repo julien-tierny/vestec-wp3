@@ -52,6 +52,7 @@ public:
   }
 
   //! return vector of vector of distances from the points of the cluster to the cluster's centroid
+  //! return value's component [i][j] is the distance of the j'th point in the i'th cluster to that cluster's centroid
   auto distancesPerPointPerCluster() const
   {
     return m_distancesPerPointPerCluster;
