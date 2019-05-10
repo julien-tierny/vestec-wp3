@@ -1,5 +1,5 @@
-/*! @file information_criteria_test.cpp
- * @brief test functionality for information criteria
+/*! @file clustering_test.cpp
+ * @brief test functionality of clustering class
  * @author Max Kontak <Max.Kontak@DLR.de>
  * @date 2019-05-10
  */
