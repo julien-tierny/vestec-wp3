@@ -4,6 +4,10 @@
  * @date 2019-05-10
  */
 
+#ifndef INFORMATION_CRITERIA_HPP
+#define INFORMATION_CRITERIA_HPP
+
+// includes
 #include <cmath>
 
 /** @brief Compute the Akaike Information Criterion of a statistical model
@@ -74,3 +78,5 @@ Scalar BayesianInformationCriterion( Scalar maxValLogLikelihood,
 {
   return std::log(numberOfSamples) * numberOfParameters - 2*maxValLogLikelihood;
 }
+
+#endif // INFORMATION_CRITERIA_HPP
