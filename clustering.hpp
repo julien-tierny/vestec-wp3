@@ -35,7 +35,7 @@ public:
                                         }
 
                                         return output;
-                                      }},
+                                      }() },
       m_distancesPerPointPerCluster { distancesPerPointPerCluster }
   {}
 
