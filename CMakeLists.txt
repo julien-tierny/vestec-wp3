@@ -41,7 +41,7 @@ endif()
 
 #########################################################################################
 
-add_executable(${MAIN_EXECUTABLE} "main.cpp" "information_criteria.hpp" "clustering.hpp")
+add_executable(${MAIN_EXECUTABLE} "main.cpp" "information_criteria.hpp" "clustering.hpp" "likelihoods.hpp")
 add_executable(${TEST_EXECUTABLE} "test_main.cpp" "information_criteria_test.cpp" "clustering_test.cpp")
 
 target_link_libraries( ${TEST_EXECUTABLE} gtest )
