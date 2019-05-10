@@ -22,7 +22,7 @@ public:
   //!
   //! @param  distancesPerPointPerCluster  vector of vectors of distances of the points in a cluster to the corresponding centroid
   //!                                      distancesPerPointPerCluster[i][j] is the distance of the j'th point in the i'th cluster to that cluster's centroid
-  Clustering( const std::vector< std::vector< Scalar > > &distancesPerPointPerCluster )
+  Clustering( std::vector< std::vector< Scalar > > const & distancesPerPointPerCluster )
     : m_numberOfClusters            { distancesPerPointPerCluster.size() },
       m_numberOfPointsPerCluster    { [&distancesPerPointPerCluster]()
                                       {
