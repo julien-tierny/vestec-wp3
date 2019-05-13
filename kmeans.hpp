@@ -27,8 +27,7 @@ namespace KMeans
                         vec<Scalar> const & v)
   {
     return (u[0]-v[0])*(u[0]-v[0])
-           + (u[1]-v[1])*(u[1]-v[1])
-           + (u[2]-v[2])*(u[2]-v[2]);
+           + (u[1]-v[1])*(u[1]-v[1]);
   }
 
   //! sum operator for vec
