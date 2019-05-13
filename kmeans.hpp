@@ -17,9 +17,11 @@
 
 namespace KMeans
 {
+  //! type used for 2d vectors
   template<typename Scalar>
   using vec = std::array<Scalar, 2>;
 
+  //! squared distance between two vec's
   template<typename Scalar>
   auto squaredDistance( vec<Scalar> u, vec<Scalar> v)
   {
@@ -28,12 +30,14 @@ namespace KMeans
            + (u[2]-v[2])*(u[2]-v[2]);
   }
 
+  //! sum operator for vec
   template<typename Scalar>
   vec<Scalar> operator+( vec<Scalar> const & u, vec<Scalar> const & v )
   {
     return { u[0]+v[0], u[1]+v[1] };
   }
 
+  //! in-place sum operator for vec
   template<typename Scalar>
   void operator+=( vec<Scalar> & u, vec<Scalar> const & v)
   {
@@ -41,12 +45,19 @@ namespace KMeans
     u[1] += v[1];
   }
 
+  //! multiplication by scalar for vec
   template<typename Scalar>
   vec<Scalar> operator*( Scalar const & a, vec<Scalar> const & u )
   {
     return { a*u[0], a*u[1] };
   }
 
+  //! @brief Lloyd's algorithm for k-means clustering
+  //!
+  //! @param  data           2d data points
+  //! @param  numClusters    desired number of clusters ("k")
+  //! @param  maxIterations  maximum number of iterations
+  //! @return                ClusteringResult class
   template< typename Scalar >
   auto lloyd_algorithm(          std::vector< vec<Scalar> >       const & data,
                         typename std::vector< Scalar >::size_type         numClusters,
@@ -63,6 +74,7 @@ namespace KMeans
     // vector with cluster number for every data point
     std::vector< decltype(numClusters) > belongsToCluster( data.size() );
 
+    // flag to capture if clustering has changed
     bool hasChanged{ true };
 
     // iteration
