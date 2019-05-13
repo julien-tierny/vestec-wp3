@@ -20,7 +20,7 @@ TEST( Clustering, Initialization )
                                                                        {5.0},
                                                                        {6.0, 7.0, 8.0, 9.0, 10.0} };
 
-  Clustering< double > const clustering{ distancesPerPointPerCluster };
+  ClusteringResult< double > const clustering{ distancesPerPointPerCluster };
 
   EXPECT_EQ( clustering.numberOfClusters(), 4 );
 

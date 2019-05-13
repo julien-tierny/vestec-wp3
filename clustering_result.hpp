@@ -1,11 +1,11 @@
-/*! @file clustering.hpp
+/*! @file clustering_result.hpp
  * @brief provides a class for clustering results
  * @author Max Kontak <Max.Kontak@DLR.de>
  * @date 2019-05-10
  */
 
-#ifndef CLUSTERING_HPP
-#define CLUSTERING_HPP
+#ifndef CLUSTERING_RESULT_HPP
+#define CLUSTERING_RESULT_HPP
 
 // includes
 #include <vector>
@@ -15,18 +15,18 @@
  ** @tparam  Scalar  type used for scalar values
  **/
 template< typename Scalar >
-class Clustering
+class ClusteringResult
 {
 public:
   //! constructor of the Clustering class
   //!
   //! @param  distancesPerPointPerCluster  vector of vectors of distances of the points in a cluster to the corresponding centroid
   //!                                      distancesPerPointPerCluster[i][j] is the distance of the j'th point in the i'th cluster to that cluster's centroid
-  Clustering( std::vector< std::vector< Scalar > > const & distancesPerPointPerCluster )
+  ClusteringResult( std::vector< std::vector< Scalar > > const & distancesPerPointPerCluster )
     : m_numberOfClusters            { distancesPerPointPerCluster.size() },
       m_numberOfPointsPerCluster    { [&distancesPerPointPerCluster]()
                                       {
-                                        std::vector< int > output;
+                                        std::vector< typename std::vector<Scalar>::size_type > output;
                                         output.reserve( distancesPerPointPerCluster.size() );
 
                                         for ( auto const &v : distancesPerPointPerCluster )
@@ -62,16 +62,16 @@ public:
 
 private:
   //! number of clusters in the clustering
-  int                                  const m_numberOfClusters;
+  int                                                    const m_numberOfClusters;
 
   //! vector of numbers of points per clusters
-  std::vector< int >                   const m_numberOfPointsPerCluster;
+  std::vector< typename std::vector<Scalar>::size_type > const m_numberOfPointsPerCluster;
 
   //! vector of vector of distances from the points of the cluster to the cluster's centroid
-  std::vector< std::vector< Scalar > > const m_distancesPerPointPerCluster;
+  std::vector< std::vector< Scalar > >                   const m_distancesPerPointPerCluster;
 
 
 
 };
 
-#endif // CLUSTERING_HPP
+#endif // CLUSTERING_RESULT_HPP
