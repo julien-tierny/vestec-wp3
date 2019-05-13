@@ -67,6 +67,8 @@ namespace KMeans
                         typename std::vector< vec<Scalar> >::size_type const & numClusters,
                         int                                            const & maxIterations = 100 )
   {
+    using Size = typename std::vector<Scalar>::size_type;
+
     if ( numClusters > data.size() )
       throw std::length_error("There must be less clusters than data points.");
 
@@ -76,7 +78,7 @@ namespace KMeans
     std::copy( data.begin(), data.begin()+numClusters, std::back_inserter(centroids) );
 
     // vector with cluster number for every data point
-    std::vector< decltype(numClusters) > belongsToCluster( data.size() );
+    std::vector< Size > belongsToCluster( data.size() );
 
     // flag to capture if clustering has changed
     bool hasChanged{ true };
@@ -87,12 +89,12 @@ namespace KMeans
       hasChanged = false;
 
       // searching nearest centroid for every data point
-      for (decltype(data.size()) j=0; j<data.size(); ++j )
+      for (Size j=0; j<data.size(); ++j )
       {
-        Scalar                minDistance { squaredDistance(data[j], centroids[0]) };
-        decltype(numClusters) minIndex    { 0U };
+        Scalar minDistance { squaredDistance(data[j], centroids[0]) };
+        Size   minIndex    { 0U };
 
-        for (decltype(numClusters) k=1; k<numClusters; ++k)
+        for (Size k=1; k<numClusters; ++k)
         {
           Scalar const distance{ squaredDistance( data[j], centroids[k] ) };
 
@@ -110,10 +112,10 @@ namespace KMeans
       }
 
       // compute new centroids
-      std::vector< vec<Scalar> >           sumOfPoints      ( numClusters );
-      std::vector< decltype(data.size()) > numberPerCluster ( numClusters );
+      std::vector< vec<Scalar> > sumOfPoints      ( numClusters );
+      std::vector< Size >        numberPerCluster ( numClusters );
 
-      for (decltype(data.size()) j=0; j<data.size(); ++j )
+      for (Size j=0; j<data.size(); ++j )
       {
         sumOfPoints[belongsToCluster[j]] += data[j];
         numberPerCluster[belongsToCluster[j]]++;
@@ -121,7 +123,7 @@ namespace KMeans
 
       std::cout << "k=" << numClusters << ", i=" << i << ", centroids: ";
 
-      for (decltype(numClusters) k=0; k<numClusters; ++k )
+      for (Size k=0; k<numClusters; ++k )
       {
         centroids[k] = (1.0/numberPerCluster[k])*( sumOfPoints[k] );
 
@@ -137,7 +139,7 @@ namespace KMeans
     // provide ClusteringResult
     std::vector< std::vector< Scalar > > distancesPerCluster( numClusters );
 
-    for (decltype(data.size()) i=0; i<data.size(); ++i)
+    for (Size i=0; i<data.size(); ++i)
     {
       distancesPerCluster[belongsToCluster[i]].push_back( squaredDistance( data[i], centroids[belongsToCluster[i]] ) );
     }
