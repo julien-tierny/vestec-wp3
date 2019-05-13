@@ -21,8 +21,11 @@ namespace Likelihoods
 template< typename Scalar >
 auto residualSumOfSquares( ClusteringResult< Scalar > const & clustering )
 {
-  Scalar resSumOfSquares{ Scalar(0.0) };
-  auto const distances{ clustering.distancesPerPointPerCluster() };
+  using Size = typename std::vector<Scalar>::size_type;
+
+  Scalar       resSumOfSquares { Scalar(0.0) };
+  auto   const distances       { clustering.distancesPerPointPerCluster() };
+  auto   const numPerCluster   { clustering.numberOfPointsPerCluster() };
 
   auto const size{ std::accumulate(numPerCluster.begin(), numPerCluster.end(), Size(0) ) };
 
