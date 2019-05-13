@@ -62,13 +62,13 @@ public:
 
 private:
   //! number of clusters in the clustering
-  int                                                    const m_numberOfClusters;
+  typename std::vector<std::vector<Scalar>>::size_type   const m_numberOfClusters            {};
 
   //! vector of numbers of points per clusters
-  std::vector< typename std::vector<Scalar>::size_type > const m_numberOfPointsPerCluster;
+  std::vector< typename std::vector<Scalar>::size_type > const m_numberOfPointsPerCluster    {};
 
   //! vector of vector of distances from the points of the cluster to the cluster's centroid
-  std::vector< std::vector< Scalar > >                   const m_distancesPerPointPerCluster;
+  std::vector< std::vector< Scalar > >                   const m_distancesPerPointPerCluster {};
 
 
 
