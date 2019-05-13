@@ -23,7 +23,8 @@ namespace KMeans
 
   //! squared distance between two vec's
   template<typename Scalar>
-  auto squaredDistance( vec<Scalar> u, vec<Scalar> v)
+  auto squaredDistance( vec<Scalar> const & u,
+                        vec<Scalar> const & v)
   {
     return (u[0]-v[0])*(u[0]-v[0])
            + (u[1]-v[1])*(u[1]-v[1])
@@ -32,14 +33,16 @@ namespace KMeans
 
   //! sum operator for vec
   template<typename Scalar>
-  vec<Scalar> operator+( vec<Scalar> const & u, vec<Scalar> const & v )
+  vec<Scalar> operator+( vec<Scalar> const & u,
+                         vec<Scalar> const & v )
   {
     return { u[0]+v[0], u[1]+v[1] };
   }
 
   //! in-place sum operator for vec
   template<typename Scalar>
-  void operator+=( vec<Scalar> & u, vec<Scalar> const & v)
+  void operator+=( vec<Scalar>       & u,
+                   vec<Scalar> const & v )
   {
     u[0] += v[0];
     u[1] += v[1];
@@ -47,7 +50,8 @@ namespace KMeans
 
   //! multiplication by scalar for vec
   template<typename Scalar>
-  vec<Scalar> operator*( Scalar const & a, vec<Scalar> const & u )
+  vec<Scalar> operator*( Scalar      const & a,
+                         vec<Scalar> const & u )
   {
     return { a*u[0], a*u[1] };
   }
@@ -59,9 +63,9 @@ namespace KMeans
   //! @param  maxIterations  maximum number of iterations
   //! @return                ClusteringResult class
   template< typename Scalar >
-  auto lloyd_algorithm(          std::vector< vec<Scalar> >       const & data,
-                        typename std::vector< Scalar >::size_type         numClusters,
-                                 int                                      maxIterations = 100 )
+  auto lloyd_algorithm( std::vector< vec<Scalar> >                     const & data,
+                        typename std::vector< vec<Scalar> >::size_type const & numClusters,
+                        int                                            const & maxIterations = 100 )
   {
     if ( numClusters > data.size() )
       throw std::length_error("There must be less clusters than data points.");
