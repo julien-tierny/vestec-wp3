@@ -46,6 +46,7 @@ add_executable(${MAIN_EXECUTABLE}
 "main.cpp" 
 "clustering_result.hpp" 
 "information_criteria.hpp" 
+"kmeans.hpp"
 "likelihoods.hpp"
 )
 
@@ -54,6 +55,7 @@ add_executable(${TEST_EXECUTABLE}
 "test_main.cpp" 
 "clustering_result_test.cpp" 
 "information_criteria_test.cpp" 
+"kmeans_test.cpp"
 "likelihoods_test.cpp"
 )
 
