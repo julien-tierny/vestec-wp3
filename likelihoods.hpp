@@ -12,7 +12,7 @@
 
 namespace Likelihoods
 {
-//! compute the simplest likelihood for clustering, which is the negative residual sum of squares
+//! compute the simplest likelihood for clustering, which is the negative residual sum of squares, normalized by the sample size
 //!
 //! @param  clustering  ClusteringResult class
 //! @return             value of the log-likelihood function
@@ -20,16 +20,20 @@ template< typename Scalar >
 auto residualSumOfSquares( ClusteringResult< Scalar > const & clustering )
 {
   Scalar resSumOfSquares{ Scalar(0.0) };
+  auto const distances{ clustering.distancesPerPointPerCluster() };
 
-  for ( auto const & v : clustering.distancesPerPointPerCluster() )
+  int size = 0;
+
+  for ( auto const & v : distances )
   {
     for ( auto const & d : v )
     {
       resSumOfSquares -= d*d;
+      size++;
     }
   }
 
-  return resSumOfSquares;
+  return resSumOfSquares/size;
 }
 
 }

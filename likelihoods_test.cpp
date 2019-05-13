@@ -1,7 +1,7 @@
-/*! @file clustering_test.cpp
- * @brief test functionality of clustering class
+/*! @file likelihoods_test.cpp
+ * @brief test functionality of likelihoods functions
  * @author Max Kontak <Max.Kontak@DLR.de>
- * @date 2019-05-10
+ * @date 2019-05-13
  */
 
 #include "clustering_result.hpp"
@@ -21,7 +21,7 @@ TEST( Likelihoods, residualSumOfSquares )
 
     auto const result{ Likelihoods::residualSumOfSquares( clustering ) };
 
-    EXPECT_NEAR( result, -14 , tol );
+    EXPECT_NEAR( result, -14./3. , tol );
   }
   {
     ClusteringResult<double> const clustering( { {0.0, 1.0, 2.0},
@@ -31,6 +31,6 @@ TEST( Likelihoods, residualSumOfSquares )
 
     auto const result{ Likelihoods::residualSumOfSquares( clustering ) };
 
-    EXPECT_NEAR( result, -385 , tol );
+    EXPECT_NEAR( result, -385./11. , tol );
   }
 }
