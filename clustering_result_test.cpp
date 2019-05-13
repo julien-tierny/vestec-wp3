@@ -4,7 +4,7 @@
  * @date 2019-05-10
  */
 
-#include "clustering.hpp"
+#include "clustering_result.hpp"
 
 #include <gtest/gtest.h>
 
