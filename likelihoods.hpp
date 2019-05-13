@@ -8,13 +8,16 @@
 #define LIKELIHOODS_HPP
 
 // includes
-#include "clustering.hpp"
+#include "clustering_result.hpp"
 
 namespace Likelihoods
 {
-//! compute the simplest likelihood for clustering, which is a residual some of squares
+//! compute the simplest likelihood for clustering, which is the negative residual sum of squares
+//!
+//! @param  clustering  ClusteringResult class
+//! @return             value of the log-likelihood function
 template< typename Scalar >
-auto residualSumOfSquares( Clustering< Scalar > const & clustering )
+auto residualSumOfSquares( ClusteringResult< Scalar > const & clustering )
 {
   Scalar resSumOfSquares{ Scalar(0.0) };
 
@@ -22,7 +25,7 @@ auto residualSumOfSquares( Clustering< Scalar > const & clustering )
   {
     for ( auto const & d : v )
     {
-      resSumOfSquares += d*d;
+      resSumOfSquares -= d*d;
     }
   }
 
