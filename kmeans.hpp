@@ -64,7 +64,8 @@ namespace KMeans
   template< typename Scalar >
   auto lloyd_algorithm( std::vector< vec<Scalar> >                     const & data,
                         typename std::vector< vec<Scalar> >::size_type const & numClusters,
-                        int                                            const & maxIterations = 100 )
+                        int                                            const & maxIterations = 100,
+                        bool                                           const & provideOutput = false )
   {
     using Size = typename std::vector<Scalar>::size_type;
 
@@ -119,17 +120,18 @@ namespace KMeans
         sumOfPoints[belongsToCluster[j]] += data[j];
         numberPerCluster[belongsToCluster[j]]++;
       }
-
-      std::cout << "k=" << numClusters << ", i=" << i << ", centroids: ";
+      if (provideOutput)
+        std::cout << "k=" << numClusters << ", i=" << i << ", centroids: ";
 
       for (Size k=0; k<numClusters; ++k )
       {
         centroids[k] = (1.0/numberPerCluster[k])*( sumOfPoints[k] );
 
-        std::cout << "{ " << centroids[k][0] << ", " << centroids[k][1] << " }, ";
+        if (provideOutput)
+          std::cout << "{ " << centroids[k][0] << ", " << centroids[k][1] << " }, ";
       }
-
-      std::cout << "\b\b  " << std::endl;
+      if ( provideOutput )
+        std::cout << "\b\b  " << std::endl;
 
       if (!hasChanged)
         break;
