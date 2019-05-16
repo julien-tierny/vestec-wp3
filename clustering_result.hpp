@@ -36,7 +36,16 @@ public:
 
                                         return output;
                                       }() },
-      m_distancesPerPointPerCluster { distancesPerPointPerCluster }
+      m_distancesPerPointPerCluster { distancesPerPointPerCluster },
+      m_numberOfPoints{ [&distancesPerPointPerCluster]()
+                        {
+                          typename std::vector<std::vector<Scalar>>::size_type output( 0 );
+
+                          for (auto const & v : distancesPerPointPerCluster )
+                            output += v.size();
+
+                          return output;
+                        }() }
   {}
 
   //! return number of clusters in the clustering
@@ -58,6 +67,11 @@ public:
     return m_distancesPerPointPerCluster;
   }
 
+  //! return total number of points
+  auto numberOfPoints() const
+  {
+    return m_numberOfPoints;
+  }
 
 
 private:
@@ -70,8 +84,8 @@ private:
   //! vector of vector of distances from the points of the cluster to the cluster's centroid
   std::vector< std::vector< Scalar > >                   const m_distancesPerPointPerCluster {};
 
-
-
+  //! total number of samples
+  typename std::vector<std::vector<Scalar>>::size_type   const m_numberOfPoints              {};
 };
 
 #endif // CLUSTERING_RESULT_HPP

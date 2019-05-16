@@ -41,4 +41,6 @@ TEST( ClusteringResult, Initialization )
   EXPECT_NEAR( clustering.distancesPerPointPerCluster()[3][2], distancesPerPointPerCluster[3][2], tol );
   EXPECT_NEAR( clustering.distancesPerPointPerCluster()[3][3], distancesPerPointPerCluster[3][3], tol );
   EXPECT_NEAR( clustering.distancesPerPointPerCluster()[3][4], distancesPerPointPerCluster[3][4], tol );
+
+  EXPECT_EQ( clustering.numberOfPoints(), 11 );
 }
