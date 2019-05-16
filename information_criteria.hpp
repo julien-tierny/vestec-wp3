@@ -22,9 +22,9 @@
  **
  ** Note that the input of the maximum value of the log-likelihood is required, not of the likelihood itself.
  **/
-template< typename Scalar >
-auto AkaikeInformationCriterion( Scalar const & maxValLogLikelihood,
-                                 int    const & numberOfParameters )
+template< typename Scalar, typename Integer >
+auto AkaikeInformationCriterion( Scalar  const & maxValLogLikelihood,
+                                 Integer const & numberOfParameters )
 {
   return 2*Scalar(numberOfParameters) - 2*maxValLogLikelihood;
 }
@@ -45,19 +45,21 @@ auto AkaikeInformationCriterion( Scalar const & maxValLogLikelihood,
  **
  ** Note that the input of the maximum value of the log-likelihood is required, not of the likelihood itself.
  **/
-template< typename Scalar >
-auto AkaikeInformationCriterionCorrected( Scalar const & maxValLogLikelihood,
-                                          int    const & numberOfParameters,
-                                          int    const & numberOfSamples )
+template< typename Scalar, typename Integer >
+auto AkaikeInformationCriterionCorrected( Scalar  const & maxValLogLikelihood,
+                                          Integer const & numberOfParameters,
+                                          Integer const & numberOfSamples )
 {
-  return AkaikeInformationCriterion( maxValLogLikelihood, numberOfParameters )
-         + ( 2 * Scalar(numberOfParameters) * (Scalar(numberOfParameters) + 1) )
-         / (Scalar(numberOfSamples) - Scalar(numberOfParameters) - 1);
+  auto   const AIC{ AkaikeInformationCriterion( maxValLogLikelihood, numberOfParameters ) };
+  Scalar const correction{ ( 2 * Scalar(numberOfParameters) * (Scalar(numberOfParameters) + 1) )
+                           / (Scalar(numberOfSamples) - Scalar(numberOfParameters) - 1) };
+
+  return AIC + correction;
 }
 
 
 
-/** @brief Compute the Bayesioan Information Criterion of a statistical model
+/** @brief Compute the Bayesian Information Criterion of a statistical model
  **
  **	The Bayesian Information Criterion (BIC) for a given estimated statistical model is given by
  **     BIC = ln(n)*k - 2*ln(L)
@@ -71,12 +73,12 @@ auto AkaikeInformationCriterionCorrected( Scalar const & maxValLogLikelihood,
  **
  ** Note that the input of the maximum value of the log-likelihood is required, not of the likelihood itself.
  **/
-template< typename Scalar >
-auto BayesianInformationCriterion( Scalar const & maxValLogLikelihood,
-                                   int    const & numberOfParameters,
-                                   int    const & numberOfSamples )
+template< typename Scalar, typename Integer >
+auto BayesianInformationCriterion( Scalar  const & maxValLogLikelihood,
+                                   Integer const & numberOfParameters,
+                                   Integer const & numberOfSamples )
 {
-  return std::log(numberOfSamples) * numberOfParameters - 2*maxValLogLikelihood;
+  return std::log(Scalar(numberOfSamples)) * Scalar(numberOfParameters) - 2*maxValLogLikelihood;
 }
 
 #endif // INFORMATION_CRITERIA_HPP
