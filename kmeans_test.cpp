@@ -98,24 +98,24 @@ TEST( KMeans, lloyd_algorithm )
     }
 
     std::cout << "Clustering with likelihood: residual sum of squares\n\n";
-    std::cout << "AIC: \n";
+    std::cout << "AIC (normalized wrt value at k=1): \n";
     for (int k=0; k<maxK; ++k)
     {
-      std::cout << "  k=" << k+1 << ": " << (AICValues[k]) << "\n";
+      std::cout << "  k=" << k+1 << ": " << AICValues[k]/std::abs(AICValues[0]) << "\n";
     }
     std::cout << std::endl;
 
-    std::cout << "AICc: \n";
+    std::cout << "AICc (normalized wrt value at k=1): \n";
     for (int k=0; k<maxK; ++k)
     {
-      std::cout << "  k=" << k+1 << ": " << (AICcValues[k]) << "\n";
+      std::cout << "  k=" << k+1 << ": " << AICcValues[k]/std::abs(AICcValues[0]) << "\n";
     }
     std::cout << std::endl;
 
-    std::cout << "BIC: \n";
+    std::cout << "BIC (normalized wrt value at k=1): \n";
     for (int k=0; k<maxK; ++k)
     {
-      std::cout << "  k=" << k+1 << ": " << (BICValues[k]) << "\n";
+      std::cout << "  k=" << k+1 << ": " << BICValues[k]/std::abs(BICValues[0]) << "\n";
     }
     std::cout << std::endl;
   }
@@ -143,24 +143,24 @@ TEST( KMeans, lloyd_algorithm )
     }
 
     std::cout << "Clustering with likelihood: same variance\n\n";
-    std::cout << "AIC: \n";
+    std::cout << "AIC (normalized wrt value at k=1): \n";
     for (int k=0; k<maxK; ++k)
     {
-      std::cout << "  k=" << k+1 << ": " << (AICValues[k]) << "\n";
+      std::cout << "  k=" << k+1 << ": " << AICValues[k]/std::abs(AICValues[0]) << "\n";
     }
     std::cout << std::endl;
 
-    std::cout << "AICc: \n";
+    std::cout << "AICc (normalized wrt value at k=1): \n";
     for (int k=0; k<maxK; ++k)
     {
-      std::cout << "  k=" << k+1 << ": " << (AICcValues[k]) << "\n";
+      std::cout << "  k=" << k+1 << ": " << AICcValues[k]/std::abs(AICcValues[0]) << "\n";
     }
     std::cout << std::endl;
 
-    std::cout << "BIC: \n";
+    std::cout << "BIC (normalized wrt value at k=1): \n";
     for (int k=0; k<maxK; ++k)
     {
-      std::cout << "  k=" << k+1 << ": " << (BICValues[k]) << "\n";
+      std::cout << "  k=" << k+1 << ": " << BICValues[k]/std::abs(BICValues[0]) << "\n";
     }
     std::cout << std::endl;
   }
