@@ -16,6 +16,8 @@ namespace Likelihoods
 {
 //! compute the simplest likelihood for clustering, which is the negative residual sum of squares, normalized by the sample size
 //!
+//! This likelihood is based on a Gaussian mixture model, where it is assumed that all clusters are of the same size and have the same standard deviation
+//!
 //! @param  clustering  ClusteringResult class
 //! @return             value of the log-likelihood function
 template< typename Scalar >
