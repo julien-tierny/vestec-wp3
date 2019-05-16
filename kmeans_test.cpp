@@ -76,13 +76,14 @@ TEST( KMeans, lloyd_algorithm )
     auto const likelihood{ Likelihoods::residualSumOfSquares(clustering) };
     likelihoods[k] = likelihood;
 
-    // for clustering, we have 2*k effective parameters: the two coordinates of the k centroids
-    AICValues[k] = AkaikeInformationCriterion( likelihood, 2*k );
-    AICcValues[k] = AkaikeInformationCriterionCorrected( likelihood, 2*k, 3*sampleSize );
-    BICValues[k] = BayesianInformationCriterion( likelihood, 2*k, 3*sampleSize );
-
-    std::cout << "";
+    // for clustering, we have 2*k+N effective parameters:
+    // - the two coordinates of the k centroids (2*k parameters)
+    // - for each point, the information to which cluster it belongs (N parameters)
+    AICValues[k] = AkaikeInformationCriterion( likelihood, 2*k+sampleSize );
+    AICcValues[k] = AkaikeInformationCriterionCorrected( likelihood, 2*k+sampleSize, 3*sampleSize );
+    BICValues[k] = BayesianInformationCriterion( likelihood, 2*k+sampleSize, 3*sampleSize );
   }
+  std::cout << std::endl;
 
   std::cout << "AIC: \n";
   for (int k=1; k<=maxK; ++k)
