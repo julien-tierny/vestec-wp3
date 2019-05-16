@@ -40,6 +40,8 @@ Use the following commands to compile both the application itself as well as the
 ```
 The CMake command should automatically clone the googletest repository into the build folder.
 
+Compilation has been tested with gcc 7.2.0.
+
 The unit tests can be executed by the command
 `./clustering_ic_test`
 in the `build/` directory.
@@ -48,4 +50,6 @@ in the `build/` directory.
 
 The optimization of information criteria for k-means clustering is tested in the `KMeans` test case.
 A test data set consisting of three clusters is created and k-means clustering is performed on this data set.
-We observe for both types of likelihoods that k=3 has the minimum information criteria value for most of the different criteria.
+We observe for both types of likelihoods that k=3 has the minimum information criteria value for most of the different criteria (AICc seems to do crazy things for k=1 for the second likelihood function).
+
+If the preprocessor macro `NDEBUG` is set (i.e., if `CMAKE_BUILD_TYPE=Release`), the approach is tested on a larger data set with 3.000.000 points compared to a small data set with 3.000 points in Debug mode.
