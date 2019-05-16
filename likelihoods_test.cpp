@@ -14,14 +14,14 @@
 
 auto const tol{ std::sqrt(std::numeric_limits<double>::epsilon()) };
 
-TEST( Likelihoods, residualSumOfSquares )
+TEST( Likelihoods, unitVariance )
 {
   {
     ClusteringResult<double> const clustering( { {1.0, 2.0, 3.0} } );
 
-    auto const result{ Likelihoods::residualSumOfSquares( clustering ) };
+    auto const result{ Likelihoods::unitVariance( clustering ) };
 
-    EXPECT_NEAR( result, -14./3. , tol );
+    EXPECT_NEAR( result, -14./6. , tol );
   }
   {
     ClusteringResult<double> const clustering( { {0.0, 1.0, 2.0},
@@ -29,8 +29,29 @@ TEST( Likelihoods, residualSumOfSquares )
                                                  {5.0},
                                                  {6.0, 7.0, 8.0, 9.0, 10.0} } );
 
-    auto const result{ Likelihoods::residualSumOfSquares( clustering ) };
+    auto const result{ Likelihoods::unitVariance( clustering ) };
 
-    EXPECT_NEAR( result, -385./11. , tol );
+    EXPECT_NEAR( result, -385./22. , tol );
+  }
+}
+
+TEST( Likelihoods, sameVariance )
+{
+  {
+    ClusteringResult<double> const clustering( { {1.0, 2.0, 3.0} } );
+
+    auto const result{ Likelihoods::sameVariance( clustering, 1 ) };
+
+    EXPECT_NEAR( result, -9.5945460467799588 , tol );
+  }
+  {
+    ClusteringResult<double> const clustering( { {0.0, 1.0, 2.0},
+                                                 {3.0, 4.0},
+                                                 {5.0},
+                                                 {6.0, 7.0, 8.0, 9.0, 10.0} } );
+
+    auto const result{ Likelihoods::sameVariance( clustering, 1 ) };
+
+    EXPECT_NEAR( result,-71.336516114295932, tol );
   }
 }
