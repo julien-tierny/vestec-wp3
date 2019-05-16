@@ -85,21 +85,21 @@ TEST( KMeans, lloyd_algorithm )
   }
   std::cout << std::endl;
 
-  std::cout << "AIC: \n";
+  std::cout << "log(AIC): \n";
   for (int k=1; k<=maxK; ++k)
   {
-    std::cout << "  k=" << k << ": " << AICValues[k] << "\n";
+    std::cout << "  k=" << k << ": " << std::log(AICValues[k]) << "\n";
   }
   std::cout << std::endl;
 
-  std::cout << "AICc: \n";
+  std::cout << "log(AICc): \n";
   for (int k=1; k<=maxK; ++k)
   {
     std::cout << "  k=" << k << ": " << AICcValues[k] << "\n";
   }
   std::cout << std::endl;
 
-  std::cout << "BIC: \n";
+  std::cout << "log(BIC): \n";
   for (int k=1; k<=maxK; ++k)
   {
     std::cout << "  k=" << k << ": " << BICValues[k] << "\n";
