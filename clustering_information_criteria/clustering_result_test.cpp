@@ -44,3 +44,25 @@ TEST( ClusteringResult, Initialization )
 
   EXPECT_EQ( clustering.numberOfPoints(), 11 );
 }
+
+TEST( ClusteringResult, fromASCIIStream )
+{
+  std::string const str{ "0.1 0.2 0.3\n0.4 0.5 0.6 0.7" };
+  std::istringstream stream{ str };
+
+  auto clustering{ clusteringResultFromASCIIStream<double>( stream ) };
+
+  ASSERT_EQ( clustering.numberOfPoints(), 7 );
+  ASSERT_EQ( clustering.numberOfClusters(), 2 );
+  ASSERT_EQ( clustering.numberOfPointsPerCluster()[0], 3 );
+  ASSERT_EQ( clustering.numberOfPointsPerCluster()[1], 4 );
+
+  EXPECT_NEAR( clustering.distancesPerPointPerCluster()[0][0], 0.1, tol );
+  EXPECT_NEAR( clustering.distancesPerPointPerCluster()[0][1], 0.2, tol );
+  EXPECT_NEAR( clustering.distancesPerPointPerCluster()[0][2], 0.3, tol );
+  EXPECT_NEAR( clustering.distancesPerPointPerCluster()[1][0], 0.4, tol );
+  EXPECT_NEAR( clustering.distancesPerPointPerCluster()[1][1], 0.5, tol );
+  EXPECT_NEAR( clustering.distancesPerPointPerCluster()[1][2], 0.6, tol );
+  EXPECT_NEAR( clustering.distancesPerPointPerCluster()[1][3], 0.7, tol );
+
+}

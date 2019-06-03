@@ -8,6 +8,10 @@
 #define CLUSTERING_RESULT_HPP
 
 // includes
+#include <fstream>
+#include <iterator>
+#include <sstream>
+#include <string>
 #include <vector>
 
 /** @brief class that stores clustering results
@@ -87,5 +91,28 @@ private:
   //! total number of samples
   typename std::vector<std::vector<Scalar>>::size_type   const m_numberOfPoints              {};
 };
+
+template< typename Scalar >
+decltype(auto) clusteringResultFromASCIIStream( std::istream & input )
+{
+  std::vector< std::vector< Scalar > > distancesPerPointPerCluster;
+
+  std::string line{};
+
+  while( std::getline( input, line ) )
+  {
+    std::istringstream is{ line };
+
+    std::vector<Scalar> row{};
+
+    std::copy( std::istream_iterator<Scalar>( is ),
+               std::istream_iterator<Scalar>(),
+               std::back_inserter( row ) );
+
+    distancesPerPointPerCluster.push_back( row );
+  }
+
+  return ClusteringResult<Scalar>( distancesPerPointPerCluster );
+}
 
 #endif // CLUSTERING_RESULT_HPP
