@@ -92,8 +92,8 @@ private:
   typename std::vector<std::vector<Scalar>>::size_type   const m_numberOfPoints              {};
 };
 
-template< typename Scalar >
-decltype(auto) clusteringResultFromASCIIStream( std::istream & input )
+template< typename Scalar, typename Stream >
+decltype(auto) clusteringResultFromASCIIStream( Stream & input )
 {
   std::vector< std::vector< Scalar > > distancesPerPointPerCluster;
 
@@ -112,7 +112,7 @@ decltype(auto) clusteringResultFromASCIIStream( std::istream & input )
     distancesPerPointPerCluster.push_back( row );
   }
 
-  return ClusteringResult<Scalar>( distancesPerPointPerCluster );
+  return ClusteringResult<Scalar>{ distancesPerPointPerCluster };
 }
 
 #endif // CLUSTERING_RESULT_HPP
