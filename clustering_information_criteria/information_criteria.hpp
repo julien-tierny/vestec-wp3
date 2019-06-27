@@ -45,10 +45,10 @@ auto AkaikeInformationCriterion( Scalar  const & maxValLogLikelihood,
  **
  ** Note that the input of the maximum value of the log-likelihood is required, not of the likelihood itself.
  **/
-template< typename Scalar, typename Integer >
-auto AkaikeInformationCriterionCorrected( Scalar  const & maxValLogLikelihood,
-                                          Integer const & numberOfParameters,
-                                          Integer const & numberOfSamples )
+template< typename Scalar, typename Integer1, typename Integer2 >
+auto AkaikeInformationCriterionCorrected( Scalar   const & maxValLogLikelihood,
+                                          Integer1 const & numberOfParameters,
+                                          Integer2 const & numberOfSamples )
 {
   auto   const AIC{ AkaikeInformationCriterion( maxValLogLikelihood, numberOfParameters ) };
   Scalar const correction{ ( 2 * Scalar(numberOfParameters) * (Scalar(numberOfParameters) + 1) )
@@ -73,10 +73,10 @@ auto AkaikeInformationCriterionCorrected( Scalar  const & maxValLogLikelihood,
  **
  ** Note that the input of the maximum value of the log-likelihood is required, not of the likelihood itself.
  **/
-template< typename Scalar, typename Integer >
-auto BayesianInformationCriterion( Scalar  const & maxValLogLikelihood,
-                                   Integer const & numberOfParameters,
-                                   Integer const & numberOfSamples )
+template< typename Scalar, typename Integer1, typename Integer2 >
+auto BayesianInformationCriterion( Scalar   const & maxValLogLikelihood,
+                                   Integer1 const & numberOfParameters,
+                                   Integer2 const & numberOfSamples )
 {
   return std::log(Scalar(numberOfSamples)) * Scalar(numberOfParameters) - 2*maxValLogLikelihood;
 }
