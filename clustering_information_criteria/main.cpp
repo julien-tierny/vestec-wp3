@@ -23,7 +23,7 @@ decltype(auto) clusteringResultFromASCIIFile( std::string & filename )
 
 int main()
 {
-  auto const dimension{ 0.5 };
+  auto const dimension{ 1 };
 
   std::vector< int > const numClusters{ 2, 3, 4, 5, 6, 7, 8, 9, 10 };
   auto const I{ numClusters.size() };
@@ -46,7 +46,7 @@ int main()
   {
     auto const clustering{ clusteringResultFromASCIIFile< double >( filenames[i] ) };
 
-    auto const likelihood{ Likelihoods::unitVariance(clustering) };
+    auto const likelihood{ Likelihoods::sameVariance(clustering, dimension) };
 
     decltype(I) const numEffectiveParam = dimension*numClusters[i];
     auto const sampleSize{ clustering.numberOfPoints() };
