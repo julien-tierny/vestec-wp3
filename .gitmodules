@@ -7,3 +7,6 @@
 [submodule "paraview-ttk"]
 	path = paraview-ttk
 	url = https://github.com/pierre-guillou/paraview-ttk
+[submodule "zfp"]
+	path = zfp
+	url = https://github.com/LLNL/zfp
