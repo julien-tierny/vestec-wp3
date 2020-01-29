@@ -225,3 +225,23 @@ The ParaView state file `clusterDiags.pvsm` at the root of this
 repository can be used to cluster those pre-computed data. Just fetch
 the two Cinema databases, put them in the same folder as the state
 file and run the pipeline with ParaView.
+
+This ParaView state file opens four layouts representing the following
+steps in our analysis pipeline:
+
+1. the first layout represents, on the left, the clustering of the
+   persistence diagrams in four clusters, disposed in circles around
+   the cluster centroid. The right panel should display the distance
+   matrix between those diagrams with the distance metric used for the
+   clustering.
+2. in the second layout, two identical point clouds with a different
+   coloring show the diagrams distance matrix reduced into a 2D
+   plane. On the left, the coloring represents the four different
+   parameter sets (TaylorGreen0 to TaylorGreen3) used for the four
+   simulation runs. On the right, the attached cluster id.
+3. in the third panel, we selected three points in the point cloud. On
+   the right panels, we show the corresponding persistence diagrams
+   and (if available) we load the compressed simulation output.
+4. the last layout is a display of the content of our two Cinema
+   databases: on the left, the persistence diagrams, on the right, the
+   compressed outputs.
