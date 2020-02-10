@@ -13,3 +13,6 @@
 [submodule "qt5"]
 	path = qt5
 	url = https://code.qt.io/qt/qt5.git
+[submodule "ospray"]
+	path = ospray
+	url = https://github.com/ospray/ospray.git
