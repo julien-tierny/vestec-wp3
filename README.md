@@ -81,6 +81,10 @@ variables point the installation directories (resp. `$prefix/bin`,
 
 ### 2. TTK
 
+The build process below is a short version of the [TTK Installation
+Guide](https://topology-tool-kit.github.io/installation.html). You
+might find additional information by reading it.
+
 First install the TTK packaged dependencies. We basically need:
 
 * Boost
