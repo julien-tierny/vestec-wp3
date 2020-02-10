@@ -10,3 +10,6 @@
 [submodule "zfp"]
 	path = zfp
 	url = https://github.com/LLNL/zfp
+[submodule "qt5"]
+	path = qt5
+	url = https://code.qt.io/qt/qt5.git
