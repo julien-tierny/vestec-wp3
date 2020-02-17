@@ -1,0 +1,5 @@
+conda_envs/
+embree*/
+ispc*/
+build/
+install/
