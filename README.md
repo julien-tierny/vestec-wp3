@@ -48,8 +48,10 @@ bash make.sh /path/to/numpy/c/headers
 ```
 For some reasons, the TTK configuration pipeline is not able to find the numpy headers, and thus, we have to specify them manually in the corresponding cmake command. Replace `/path/to/numpy/c/headers` with the path of your local numpy installation.
 
-Notice, sice Eigen and Graphviz are optional to VESTEC, these libraries have been disabled in Paraview.
-Also, OSPRay is disable at the moment.
+The script will create two folders: `build` and `install`, containing the build and install outputs of the libraries compiled during the process.
+
+`Notice` Sice Eigen and Graphviz are optional to VESTEC, these libraries have been disabled in Paraview.
+Also, OSPRay is disable at the moment (working on compiling it).
 
 
 Run the Simulator & Extract Persistence Diagrams
