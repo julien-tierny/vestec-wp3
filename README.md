@@ -11,6 +11,7 @@ Software Dependencies
 
 To reproduce our results, you will need the following pieces of
 software:
+* QT5 library
 * ParaView (with TTK patches), for its Catalyst in-situ framework
 * TTK, the topological data analysis library
   + ZFP is a numerical compression library, and one non-packaged dependency of TTK
@@ -29,155 +30,27 @@ Build (& Install) Everything
 ----------------------------
 
 You will find here some basic instructions on how to build our
-prototype on a Linux machine.
+prototype on a Linux machine without the need of sudo rights.
+This build process has been tested on SLED12 workstation
 
-
-Just follow these instructions and hopefully everything
-will work fine!
-
-### 1. ParaView
-
-Since TTK and ipicmini depend on ParaView, you will have to build it
-first. A pre-patched ParaView 5.7.0 has been embedded as a git
-submodule.
-
-First install the set of ParaView build-time dependencies. Below are
-the Ubuntu Bionic ones.
+This repository is self contained, with the exception of the numpy C headers.
+As such headers cannot be easily installed in a SLED12 system, I relied on conda (miniconda precisely).
+miniconda can be downloaded [here](https://docs.conda.io/en/latest/miniconda.html).
+Once installed simply execute the following command to install numpy:
 
 ```sh
-sudo apt-get build-dep paraview
-# or alternatively here is a (hopefully full) explicit list
-sudo apt install -y \
-     cmake-curses-gui \
-     g++ \
-     libegl1-mesa-dev \
-     libpython3-dev \
-     libqt5x11extras5-dev \
-     libxt-dev \
-     qt5-default \
-     qttools5-dev \
-     qtxmlpatterns5-dev-tools \
+conda install -y numpy scikit-learn 
 ```
-
-After that, let's build and install ParaView:
+Then, simply run the following command:
 
 ```sh
-cd paraview-ttk
-mkdir build
-cd build
-cmake ..
-cmake --build .        # or your default generator build command,
-                       # generally "make" or "ninja". You can reduce
-                       # the build time by adding " -j$(nproc)"
-sudo cmake --install . # for CMake >=3.15. Otherwise, use your default
-                       # generator install command (something like
-                       # "sudo make install" or "sudo ninja install")
+bash make.sh /path/to/numpy/c/headers
 ```
+For some reasons, the TTK configuration pipeline is not able to find the numpy headers, and thus, we have to specify them manually in the corresponding cmake command. Replace `/path/to/numpy/c/headers` with the path of your local numpy installation.
 
-Once installed (by default in `$prefix=/usr/local`), make sure that
-the `$PATH`, the `$LD_LIBRARY_PATH` and the `$PYTHONPATH` environment
-variables point the installation directories (resp. `$prefix/bin`,
-`$prefix/lib` and `$prefix/lib/python`major`.`minor`/site-packages`).
+Notice, sice Eigen and Graphviz are optional to VESTEC, these libraries have been disabled in Paraview.
+Also, OSPRay is disable at the moment.
 
-### 2. TTK
-
-The build process below is a short version of the [TTK Installation
-Guide](https://topology-tool-kit.github.io/installation.html). You
-might find additional information by reading it.
-
-First install the TTK packaged dependencies. We basically need:
-
-* Boost
-* SQLite
-* Scikit-Learn
-* Zlib
-* ZFP (to be installed apart)
-* Graphviz (optional for VESTEC)
-* Eigen (optional for VESTEC)
-
-Here is a Ubuntu Bionic bash install command:
-
-```sh
-sudo apt install -y \
-     libboost-dev \
-     libeigen3-dev \
-     libgraphviz-dev \
-     libsqlite3-dev \
-     python3-sklearn \
-     zlib1g-dev
-```
-
-ZFP is one of TTK dependencies that is sadly not (yet) packaged for
-Ubuntu. A git submodule containing ZFP is available in this
-repository, just build & install it:
-
-```sh
-cd zfp
-mkdir build
-cd build
-cmake ..
-cmake --build .  # or "make|ninja -j$(nproc)"
-sudo cmake --install . # or "sudo make|ninja install"
-```
-
-The next step is to build TTK. Since ParaView and ZFP are installed in
-the default CMake prefix, TTK should be able to automatically get the
-dependencies information.
-
-```sh
-cd ttk
-mkdir build
-cd build
-cmake \
-      -DTTK_BUILD_STANDALONE_APPS=OFF `# faster compile time` \
-      -DTTK_ENABLE_SCIKIT_LEARN=ON \
-      -DTTK_ENABLE_ZFP=ON \
-      ..
-cmake --build . # or "make|ninja -j$(nproc)"
-sudo cmake --install . # or "sudo make|ninja install"
-```
-
-Since ParaView v5.7.0, you need to set the `$PV_PLUGIN_PATH` environment
-variable to point to the TTK ParaView plugin path. Should be something
-like:
-
-```sh
-export PV_PLUGIN_PATH=$prefix/lib/paraview-5.7/plugins/TopologyToolKit
-```
-
-Replace `$prefix` with your default CMake installation prefix,
-`/usr/local` by default.
-
-TTK also comes with its own Python script for interfacing with
-Scikit-Learn. This script will be installed in
-`$prefix/share/scripts/ttk` and this folder should be appended to the
-`$PYTHONPATH` environment variable.
-
-Once TTK is installed, you should be able to launch ParaView and
-select one out of the three example visualization pipelines from the
-welcome screen. Those pipelines should execute without error.
-
-
-### 3. ipicmini
-
-KTH's Space Weather simulator embedds a Catalyst Adaptor to launch
-in-situ ParaView pipelines. It also uses CMake as a build system but
-beware: the entry point is in the `src/` subdirectory.
-
-You will need to install a MPI library first, such as OpenMPI or
-MPICH.
-
-```sh
-cd ipicmini
-mkdir build
-cd build
-cmake \
-    -DUSE_CATALYST=ON \
-    -DCMAKE_BUILD_TYPE=Release \
-    ../src
-cmake --build . # or ...
-# no need to install it
-```
 
 Run the Simulator & Extract Persistence Diagrams
 ------------------------------------------------
