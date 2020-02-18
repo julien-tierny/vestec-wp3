@@ -16,6 +16,7 @@ software:
 * TTK, the topological data analysis library
   + ZFP is a numerical compression library, and one non-packaged dependency of TTK
 * ipicmini, KTH's version of the iPic3D space weather simulator
+* OSPRay, a portable ray tracing engine used by Paraview
 
 Those dependencies have been put as *git submodules* of the current
 repository. To fetch them, please run
@@ -25,6 +26,11 @@ git submodule update --init
 ```
 in the repository root folder.
 
+Other dependencies required by OSPRay are:
+* Intel SPMD Program Compiler (ISPC), a compiler variant of the C programming language adopting SPMD model
+* Intel Embree, s a collection of high-performance ray tracing kernels
+
+Such dependencies are downloaded as binaries directly when running the bash script.
 
 Build (& Install) Everything
 ----------------------------
@@ -42,7 +48,6 @@ Once installed simply execute the following command to install numpy:
 conda install -y numpy scikit-learn 
 ```
 Then, simply run the following command:
-
 ```sh
 bash make.sh /path/to/numpy/c/headers
 ```
@@ -50,9 +55,21 @@ For some reasons, the TTK configuration pipeline is not able to find the numpy h
 
 The script will create two folders: `build` and `install`, containing the build and install outputs of the libraries compiled during the process.
 
-`Notice` Sice Eigen and Graphviz are optional to VESTEC, these libraries have been disabled in Paraview.
-Also, OSPRay is disable at the moment (working on compiling it).
-
+#### Notice
+Sice Eigen and Graphviz are optional to VESTEC, these libraries have been disabled in Paraview.
+#### Warning
+Once enabled OSPRay in Paraview, I got stuck in the following error while compiling Paraview:
+```sh
+version `GLIBCXX_3.4.26' not found (required by ../../../bin/vtkProcessXML-pv5.7) 
+```
+This issue can be solved by using a newer gcc version. Using the environmet modules, first unload the current gcc (in my case:
+```sh
+module unload gcc/gcc-8.1.0/sled12.x86_64.gcc.release
+```
+Then, load the newer gcc 9.2:
+```sh
+module load gcc/gcc-9.2.0/sled12.x86_64.gcc.release
+```
 
 Run the Simulator & Extract Persistence Diagrams
 ------------------------------------------------
