@@ -1,9 +1,6 @@
 [submodule "ttk"]
 	path = ttk
 	url = https://github.com/topology-tool-kit/ttk
-[submodule "ipicmini"]
-	path = ipicmini
-	url = https://github.com/pierre-guillou/ipicmini
 [submodule "paraview-ttk"]
 	path = paraview-ttk
 	url = https://github.com/pierre-guillou/paraview-ttk
