@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # prerequisites:
-#     git clone git@github.com:julien-tierny/vestec-wp3.git 
+#     git clone git@github.com:julien-tierny/vestec-wp3.git
 #     git checkout space_weather_prototype_DLR_config
 #     git submodule update --init
 
@@ -22,10 +22,12 @@ NUM_BUILD_JOBS="$(nproc)"
 INSTALL_DIR="$CURRENT_DIR/install"
 BUILD_DIR="$CURRENT_DIR/build"
 
+
 ### 0 CREATE BUILD AND INSTALL DIRECTORIES
 mkdir {build,install,build/qt5,install/qt5,install/paraview-ttk,build/paraview-ttk}
 mkdir {install/zfp,build/zfp,install/ttk,build/ttk,build/ipicmini}
 mkdir {build/ospray,install/ospray}
+
 
 ### 1 COMPILE QT
 ## (INFO: to understand the available flags that you can set type ./configure --help)
@@ -39,6 +41,7 @@ cd $BUILD_DIR/qt5
 ../../qt5/configure -prefix "$INSTALL_DIR/qt5" -opensource -confirm-license -nomake tests -nomake examples -silent -release
 gmake "-j$NUM_BUILD_JOBS"
 gmake install
+
 
 ### 2 INSTALL OSPRAY
 cd $CURRENT_DIR
@@ -63,8 +66,9 @@ cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/ospray \
 	-Dembree_DIR:PATH=$CURRENT_DIR/embree \
 	-DISPC_EXECUTABLE:PATH=$CURRENT_DIR/ispc/bin/ispc \
 	-DOSPRAY_TASKING_SYSTEM=OpenMP \
-	$CURRENT_DIR/ospray/ 	
+	$CURRENT_DIR/ospray/
 cmake --build . --target install --parallel "$NUM_BUILD_JOBS"
+
 
 ### 3 COMPILE PARAVIEW
 cd $BUILD_DIR/paraview-ttk
@@ -74,9 +78,10 @@ cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/paraview-ttk \
 	-Dospray_DIR:PATH=$INSTALL_DIR/ospray/lib64/cmake/ospray-1.8.5 \
 	-Dembree_DIR:PATH=$CURRENT_DIR/embree \
 	-DCMAKE_BUILD_TYPE=Release \
-	$CURRENT_DIR/paraview-ttk/ 
-#cmake -DCMAKE_INSTALL_PREFIX=/localdata2/VESTEC/vestec-wp3/install/paraview-ttk -DQt5_DIR:PATH=/localdata2/VESTEC/vestec-wp3/install/qt5/lib/cmake/Qt5 -Dospray_DIR:PATH=/localdata2/VESTEC/vestec-wp3/install/ospray/lib64/cmake/ospray-1.8.5/ -Dembree_DIR:PATH=/localdata2/VESTEC/vestec-wp3/embree -DCMAKE_BUILD_TYPE=Release /localdata2/VESTEC/vestec-wp3/paraview-ttk/ 
+	$CURRENT_DIR/paraview-ttk/
+#cmake -DCMAKE_INSTALL_PREFIX=/localdata2/VESTEC/vestec-wp3/install/paraview-ttk -DQt5_DIR:PATH=/localdata2/VESTEC/vestec-wp3/install/qt5/lib/cmake/Qt5 -Dospray_DIR:PATH=/localdata2/VESTEC/vestec-wp3/install/ospray/lib64/cmake/ospray-1.8.5/ -Dembree_DIR:PATH=/localdata2/VESTEC/vestec-wp3/embree -DCMAKE_BUILD_TYPE=Release /localdata2/VESTEC/vestec-wp3/paraview-ttk/
 cmake --build . --target install --parallel "$NUM_BUILD_JOBS"
+
 
 ### 4 COMPILE ZFP
 # cd zfp
@@ -86,7 +91,14 @@ cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/zfp \
 cmake --build . --target install --parallel "$NUM_BUILD_JOBS"
 
 
-### 5 COMPILE TTK
+### 5 FETCH EIGEN
+wget https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
+tar xzf eigen-3.3.7.tar.gz
+mv eigen-3.3.7/ eigen/
+rm eigen-3.3.7.tar.gz
+
+
+### 6 COMPILE TTK
 cd $BUILD_DIR/ttk
 cmake DCMAKE_C_FLAGS="-luuid" \
 	-DCMAKE_CXX_FLAGS="-luuid" \
@@ -98,21 +110,10 @@ cmake DCMAKE_C_FLAGS="-luuid" \
 	-DTTK_ENABLE_GRAPHVIZ=OFF \
 	-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/ttk \
 	-DCMAKE_BUILD_TYPE=Release \
+	-DEIGEN_DIR=eigen/cmake \
 	$CURRENT_DIR/ttk/
 cmake --build . --target install --parallel "$NUM_BUILD_JOBS"
 export PV_PLUGIN_PATH=$INSTALL_DIR/ttk/lib64/ttk/paraview-plugin
-
-### 4 COMPILE IPICMINI #####
-#mkdir install/ipicmini
-cd $BUILD_DIR/ipicmini
-cmake -DCMAKE_C_FLAGS="-luuid" \
-	-DCMAKE_CXX_FLAGS="-luuid" \
-	-DParaView_DIR:PATH=$BUILD_DIR/paraview-ttk \
-	-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/ipicmini \
-	-DUSE_CATALYST=ON \
-	-DCMAKE_BUILD_TYPE=Release \
-	$CURRENT_DIR/ipicmini/src
-cmake --build . --parallel "$NUM_BUILD_JOBS"
 
 # finally switch to repository
 cd $CURRENT_DIR
