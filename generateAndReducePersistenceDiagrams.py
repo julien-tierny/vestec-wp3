@@ -36,85 +36,71 @@ def fetch_data_from_ftp(output_dir="input_data"):
 def generate_persistence_diagrams(data_dir="input_data", cdb="pdiags.cdb"):
     """Generate Persistence Diagrams from FBK data and store them inside a Cinema Database"""
 
-    # create output Cinema Database
-    cinema = pathlib.Path(cdb)
-    if not cinema.is_dir():
-        cinema.mkdir()
+    inpdatadir = pathlib.Path(data_dir)
 
-    # generate persistence diagrams from NetCDF files
-    with open(cinema / "data.csv", "w", newline="") as dst:
-        # Cinema Database CSV headers
-        fieldnames = ["Type", "It", "Day", "FILE"]
-        writer = csv.DictWriter(dst, fieldnames)
-        writer.writeheader()
+    for nc in inpdatadir.glob("*.nc"):
+        # parse simulation parameters from datasets names
+        nc_params = nc.name.split(".")[0].split("_")
+        Type = nc_params[0]
+        It = "It" + nc_params[-3]
+        Day = nc_params[-1]
 
-        inpdatadir = pathlib.Path(data_dir)
-        outdatadir = cinema / "data"
-        # create Cinema Database product folder
-        if not outdatadir.is_dir():
-            outdatadir.mkdir()
+        # use ParaView to read NetCDF files
+        mosq = simple.NetCDFReader(FileName=[str(nc)])
+        mosq.Dimensions = "(lat, lon)"
+        mosq.SphericalCoordinates = False
 
-        for nc in inpdatadir.glob("*.nc"):
-            # parse simulation parameters from datasets names
-            nc_params = nc.name.split(".")[0].split("_")
-            Type = nc_params[0]
-            It = "It" + nc_params[-3]
-            Day = nc_params[-1]
+        # transform NetCDF to vtkImageData
+        resample = simple.ResampleToImage(Input=mosq)
+        resample.SamplingDimensions = [244, 295, 1]
 
-            # output persistence diagram file name
-            filename = Type + "_" + It + "_" + Day + ".vtu"
+        # use TTKHarmonicField to generate missing pixel values
+        # without messing with topology
+        ttkId = simple.TTKIdentifiers(Input=resample)
 
-            # write meta-data to Cinema Database index
-            writer.writerow(
-                {"FILE": "data/" + filename, "Type": Type, "It": It, "Day": Day}
-            )
+        selection = simple.SelectPoints()
+        if Type == "prob":
+            Type = "probability"
+        selection.QueryString = Type + " > 0"
+        selection.FieldType = "POINT"
+        extractSel = simple.ExtractSelection(Input=ttkId, Selection=selection)
 
-            # use ParaView to read NetCDF files
-            mosq = simple.NetCDFReader(FileName=[str(nc)])
-            mosq.Dimensions = "(lat, lon)"
-            mosq.SphericalCoordinates = False
+        ttkHarm = simple.TTKHarmonicField(
+            InputGeometry=ttkId, InputConstraints=extractSel
+        )
+        ttkHarm.ConstraintValues = Type
+        ttkHarm.Solver = "Iterative"
 
-            # transform NetCDF to vtkImageData
-            resample = simple.ResampleToImage(Input=mosq)
-            resample.SamplingDimensions = [244, 295, 1]
+        # more cleaning: use GaussianResampling to merge topological peaks
+        gauss = simple.GaussianResampling(Input=ttkHarm)
+        gauss.ResampleField = ["POINTS", "OutputHarmonicField"]
+        gauss.ResamplingGrid = [488, 590, 3]
+        gauss.GaussianSplatRadius = 0.02
+        gauss.GaussianExponentFactor = -10.0
+        gauss.SplatAccumulationMode = "Sum"
 
-            # use TTKHarmonicField to generate missing pixel values
-            # without messing with topology
-            ttkId = simple.TTKIdentifiers(Input=resample)
+        slic = simple.Slice(Input=gauss)
+        slic.SliceType = "Plane"
+        slic.SliceType.Normal = [0.0, 0.0, 1.0]
 
-            selection = simple.SelectPoints()
-            if Type == "prob":
-                Type = "probability"
-            selection.QueryString = Type + " > 0"
-            selection.FieldType = "POINT"
-            extractSel = simple.ExtractSelection(Input=ttkId, Selection=selection)
+        # compute persistence diagram
+        persdiag = simple.TTKPersistenceDiagram(Input=slic)
+        persdiag.DebugLevel = 3
 
-            ttkHarm = simple.TTKHarmonicField(
-                InputGeometry=ttkId, InputConstraints=extractSel
-            )
-            ttkHarm.ConstraintValues = Type
-            ttkHarm.Solver = "Iterative"
+        # add parameters as Field Data
+        arred = simple.TTKArrayEditor(Target=persdiag)
+        arred.TargetAttribute = "Field Data"
+        params = {"Type": Type, "It": It, "Day": Day}
+        arred.DataString = "\n".join([",".join(tup) for tup in params.items()])
 
-            # more cleaning: use GaussianResampling to merge topological peaks
-            gauss = simple.GaussianResampling(Input=ttkHarm)
-            gauss.ResampleField = ["POINTS", "OutputHarmonicField"]
-            gauss.ResamplingGrid = [244, 295, 3]
-            gauss.GaussianSplatRadius = 0.02
-            gauss.GaussianExponentFactor = -10.0
-            gauss.SplatAccumulationMode = "Sum"
+        # save file in Cinema Database
+        cinewriter = simple.TTKCinemaWriter(Input=arred)
+        cinewriter.DatabasePath = cdb
+        cinewriter.ForwardInput = False
 
-            slic = simple.Slice(Input=gauss)
-            slic.SliceType = "Plane"
-            slic.SliceType.Normal = [0.0, 0.0, 1.0]
-
-            # compute persistence diagram
-            persdiag = simple.TTKPersistenceDiagram(Input=slic)
-            persdiag.DebugLevel = 3
-
-            # save file in Cinema Database
-            outfile = str(outdatadir / filename)
-            simple.SaveData(outfile, Input=persdiag)
-            print(">> Saved " + outfile)
+        # trigger the pipeline by saving the empty output of TTKCinemaWriter
+        simple.SaveData("empty.vtu", Input=cinewriter)
+        print(">> Processed " + str(nc))
 
 
 def compute_distances(cdb="pdiags.cdb"):
