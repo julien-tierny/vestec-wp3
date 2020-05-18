@@ -83,6 +83,8 @@ def generate_persistence_diagrams(data_dir="input_data", cdb="pdiags.cdb"):
             ttkId = simple.TTKIdentifiers(Input=resample)
 
             selection = simple.SelectPoints()
+            if Type == "prob":
+                Type = "probability"
             selection.QueryString = Type + " > 0"
             selection.FieldType = "POINT"
             extractSel = simple.ExtractSelection(Input=ttkId, Selection=selection)
