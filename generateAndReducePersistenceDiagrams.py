@@ -44,6 +44,8 @@ def generate_persistence_diagrams(data_dir="input_data", cdb="pdiags.cdb"):
         Type = nc_params[0]
         It = "It" + nc_params[-3]
         Day = nc_params[-1]
+        FieldName = "probability" if Type == "prob" else Type
+        params = {"Type": Type, "It": It, "Day": Day}
 
         # use ParaView to read NetCDF files
         mosq = simple.NetCDFReader(FileName=[str(nc)])
@@ -59,16 +61,14 @@ def generate_persistence_diagrams(data_dir="input_data", cdb="pdiags.cdb"):
         ttkId = simple.TTKIdentifiers(Input=resample)
 
         selection = simple.SelectPoints()
-        if Type == "prob":
-            Type = "probability"
-        selection.QueryString = Type + " > 0"
+        selection.QueryString = FieldName + " > 0"
         selection.FieldType = "POINT"
         extractSel = simple.ExtractSelection(Input=ttkId, Selection=selection)
 
         ttkHarm = simple.TTKHarmonicField(
             InputGeometry=ttkId, InputConstraints=extractSel
         )
-        ttkHarm.ConstraintValues = Type
+        ttkHarm.ConstraintValues = FieldName
         ttkHarm.Solver = "Iterative"
 
         # more cleaning: use GaussianResampling to merge topological peaks
@@ -90,7 +90,6 @@ def generate_persistence_diagrams(data_dir="input_data", cdb="pdiags.cdb"):
         # add parameters as Field Data
         arred = simple.TTKArrayEditor(Target=persdiag)
         arred.TargetAttribute = "Field Data"
-        params = {"Type": Type, "It": It, "Day": Day}
         arred.DataString = "\n".join([",".join(tup) for tup in params.items()])
 
         # save file in Cinema Database
