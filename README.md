@@ -93,3 +93,52 @@ module load gcc/gcc-9.2.0/sled12.x86_64.gcc.release
 
 Fetch & analyse the Mosquito-Borne Disease data
 -----------------------------------------------
+
+A Python script named `generateAndReducePersistenceDiagrams.py` has
+been provided in this repository to perform the following computation steps:
+
+1. download the Mosquito-Borne Disease data from the VESTEC FTP server
+   (for now only the "probability" datasets are downloaded);
+2. for each dataset, perform some pre-processing to "reconstruct" the
+   missing data;
+3. compute a persistence diagram from this reconstructed
+   representation and store it in a Cinema Database;
+4. cluster these persistence diagrams, compute a distance matrix and
+   reduce it with MDS to a 3D point cloud. A heat map is also
+   generated from the distance matrix.
+
+This Python scripts is used as follows:
+
+* to perform the data fetching step, invoke it through
+
+```bash
+python generateAndReducePersistenceDiagrams.py fetch -u USERNAME -p PASSWORD
+```
+
+where USERNAME and PASSWORD are the credentials to access the FTP
+server. Input data will be stored inside the `input_data` folder.
+
+* to pre-process and generate the persistence diagrams in one step
+  (the pre-processed data are generated on the fly and not kept) , use
+
+```bash
+pvpython generateAndReducePersistenceDiagrams.py generate
+```
+
+(note that this step uses `pvpython` instead of `python` to set some
+environment). The persistence diagrams will be stored inside a Cinema
+Database named `pdiags.cdb` in the current working directory. An empty
+VTK file, `empty.vtu` is also generated alongside as a byproduct.
+
+* to generate the 3D point cloud and the heat map, type
+
+```bash
+pvpython generateAndReducePersistenceDiagrams.py cluster
+```
+
+This task can take up to several tens of minutes depending on the
+available computational power. The results take the form of two VTK
+files:
+
+* `mosq_distmat.vtu` contains the distance matrix and the 3D point cloud and
+* `mosq_heatmap.vtu` contains a heat map of the distance matrix.
