@@ -1,9 +1,9 @@
-Topological Analysis and Clustering of the Space Weather Simulator Output
-=========================================================================
+Topological Analysis of the Mosquito-Borne Diseases Simulator Output
+====================================================================
 
 This repository gathers various software dependencies needed to apply
-Sorbonne Université's topological analysis on KTH's Space Weather
-simulator. You will find below a list of steps to reproduce our
+Sorbonne Université's topological analysis on FBK's Mosquito-Borne
+Diseases data. You will find below a list of steps to reproduce our
 results.
 
 Software Dependencies
@@ -15,7 +15,6 @@ software:
 * ParaView (with TTK patches), for its Catalyst in-situ framework
 * TTK, the topological data analysis library
   + ZFP is a numerical compression library, and one non-packaged dependency of TTK
-  + eigen, a C++ linear algebra library
 * OSPRay, a portable ray tracing engine used by Paraview
 
 Those dependencies have been put as *git submodules* of the current
@@ -31,7 +30,11 @@ Other dependencies required by OSPRay are:
   programming language adopting SPMD model
 * Intel Embree, a collection of high-performance ray tracing kernels
 
+Eigen, a C++ header-only linear algebra library, is required also by
+TTK to run on FBK's data.
+
 Such dependencies are downloaded as binaries directly when running the bash script.
+
 
 Build (& Install) Everything
 ----------------------------
@@ -87,3 +90,6 @@ Then, load the newer GCC 9.2:
 ```sh
 module load gcc/gcc-9.2.0/sled12.x86_64.gcc.release
 ```
+
+Fetch & analyse the Mosquito-Borne Disease data
+-----------------------------------------------
