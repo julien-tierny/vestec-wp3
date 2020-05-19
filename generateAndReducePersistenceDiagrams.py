@@ -23,7 +23,7 @@ def fetch_data_from_ftp(args):
         "--directory-prefix=" + dst_dir.name,
         "--user=" + args.username,
         "--password=" + args.password,
-        "ftp://ftp.dlr.de/datasets/diseases/Output",
+        "ftp://ftp.dlr.de/datasets/diseases/Output/probability",
     ]
     subprocess.check_call(cmd)
 
