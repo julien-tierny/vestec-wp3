@@ -8,14 +8,9 @@ import subprocess
 from paraview import simple
 
 
-def fetch_data_from_ftp(output_dir="input_data"):
+def fetch_data_from_ftp(args):
     """Fetch data from DLR FTP with wget"""
-    parser = argparse.ArgumentParser(description="Credentials to access FTP server")
-    parser.add_argument("-u", "--username", type=str, help="Username", required=True)
-    parser.add_argument("-p", "--password", type=str, help="Password", required=True)
-    cli_args = parser.parse_args()
-
-    dst_dir = pathlib.Path("data")
+    dst_dir = pathlib.Path(args.datadir)
     if not dst_dir.is_dir():
         dst_dir.mkdir()
 
@@ -26,17 +21,17 @@ def fetch_data_from_ftp(output_dir="input_data"):
         "-c",
         "-nd",
         "--directory-prefix=" + dst_dir.name,
-        "--user=" + cli_args.username,
-        "--password=" + cli_args.password,
+        "--user=" + args.username,
+        "--password=" + args.password,
         "ftp://ftp.dlr.de/datasets/diseases/Output",
     ]
     subprocess.check_call(cmd)
 
 
-def generate_persistence_diagrams(data_dir="input_data", cdb="pdiags.cdb"):
+def generate_persistence_diagrams(args):
     """Generate Persistence Diagrams from FBK data and store them inside a Cinema Database"""
 
-    inpdatadir = pathlib.Path(data_dir)
+    inpdatadir = pathlib.Path(args.datadir)
 
     for nc in inpdatadir.glob("*.nc"):
         # parse simulation parameters from datasets names
@@ -94,7 +89,7 @@ def generate_persistence_diagrams(data_dir="input_data", cdb="pdiags.cdb"):
 
         # save file in Cinema Database
         cinewriter = simple.TTKCinemaWriter(Input=arred)
-        cinewriter.DatabasePath = cdb
+        cinewriter.DatabasePath = args.cdbdir
         cinewriter.ForwardInput = False
 
         # trigger the pipeline by saving the empty output of TTKCinemaWriter
@@ -102,11 +97,11 @@ def generate_persistence_diagrams(data_dir="input_data", cdb="pdiags.cdb"):
         print(">> Processed " + str(nc))
 
 
-def compute_distances(cdb="pdiags.cdb"):
+def compute_distances(args):
     """Compute distance matrix between persistence diagrams"""
 
     # read the Cinema Database index
-    cineRead = simple.TTKCinemaReader(DatabasePath=cdb)
+    cineRead = simple.TTKCinemaReader(DatabasePath=args.cdbdir)
 
     # perform SQL query on the Cinema Database index
     query = simple.TTKCinemaQuery(InputTable=cineRead)
@@ -150,11 +145,28 @@ def compute_distances(cdb="pdiags.cdb"):
 
 
 def main():
-    datadir = "input_data"
-    cinema_db = "pdiags_prob.cdb"
-    fetch_data_from_ftp(datadir)
-    generate_persistence_diagrams(datadir, cinema_db)
-    compute_distances(cinema_db)
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
+
+    datadir = "input_dir"
+    cdbdir = "pdiags.cdb"
+
+    fetchpars = subparsers.add_parser("fetch")
+    fetchpars.add_argument("-u", "--username", type=str, required=True)
+    fetchpars.add_argument("-p", "--password", type=str, required=True)
+    fetchpars.add_argument("-d", "--destdir", type=str, default=datadir)
+    fetchpars.set_defaults(func=fetch_data_from_ftp)
+
+    generate_pd = subparsers.add_parser("gen")
+    generate_pd.add_argument("-i", "--input_dir", type=str, default=datadir)
+    generate_pd.add_argument("-c", "--cdb_dir", type=str, default=cdbdir)
+    generate_pd.set_defaults(func=generate_persistence_diagrams)
+
+    cluster_pd = subparsers.add_parser("cluster")
+    cluster_pd.add_argument("-c", "--cdb_dir", type=str, default=cdbdir)
+    cluster_pd.set_defaults(func=compute_distances)
+
+    parser.parse_args()
 
 
 if __name__ == "__main__":
