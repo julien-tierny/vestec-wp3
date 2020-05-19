@@ -10,7 +10,7 @@ from paraview import simple
 
 def fetch_data_from_ftp(args):
     """Fetch data from DLR FTP with wget"""
-    dst_dir = pathlib.Path(args.datadir)
+    dst_dir = pathlib.Path(args.destdir)
     if not dst_dir.is_dir():
         dst_dir.mkdir()
 
@@ -31,7 +31,7 @@ def fetch_data_from_ftp(args):
 def generate_persistence_diagrams(args):
     """Generate Persistence Diagrams from FBK data and store them inside a Cinema Database"""
 
-    inpdatadir = pathlib.Path(args.datadir)
+    inpdatadir = pathlib.Path(args.input_dir)
 
     for nc in inpdatadir.glob("*.nc"):
         # parse simulation parameters from datasets names
@@ -89,7 +89,7 @@ def generate_persistence_diagrams(args):
 
         # save file in Cinema Database
         cinewriter = simple.TTKCinemaWriter(Input=arred)
-        cinewriter.DatabasePath = args.cdbdir
+        cinewriter.DatabasePath = args.cdb_dir
         cinewriter.ForwardInput = False
 
         # trigger the pipeline by saving the empty output of TTKCinemaWriter
@@ -101,7 +101,7 @@ def compute_distances(args):
     """Compute distance matrix between persistence diagrams"""
 
     # read the Cinema Database index
-    cineRead = simple.TTKCinemaReader(DatabasePath=args.cdbdir)
+    cineRead = simple.TTKCinemaReader(DatabasePath=args.cdb_dir)
 
     # perform SQL query on the Cinema Database index
     query = simple.TTKCinemaQuery(InputTable=cineRead)
@@ -160,7 +160,7 @@ def main():
     fetchpars.add_argument("-d", "--destdir", type=str, default=datadir)
     fetchpars.set_defaults(func=fetch_data_from_ftp)
 
-    generate_pd = subparsers.add_parser("gen")
+    generate_pd = subparsers.add_parser("generate")
     generate_pd.add_argument("-i", "--input_dir", type=str, default=datadir)
     generate_pd.add_argument("-c", "--cdb_dir", type=str, default=cdbdir)
     generate_pd.set_defaults(func=generate_persistence_diagrams)
@@ -169,7 +169,8 @@ def main():
     cluster_pd.add_argument("-c", "--cdb_dir", type=str, default=cdbdir)
     cluster_pd.set_defaults(func=compute_distances)
 
-    parser.parse_args()
+    cli_args = parser.parse_args()
+    cli_args.func(cli_args)
 
 
 if __name__ == "__main__":
