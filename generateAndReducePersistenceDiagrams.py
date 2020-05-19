@@ -112,6 +112,9 @@ def compute_distances(args):
     # load the filtered products (persistence diagrams) from the database
     prodRead = simple.TTKCinemaProductReader(Input=query)
 
+    # TODO use TTKPersistenceDiagramClustering here to cluster
+    # diagrams before computing the distance matrix
+
     # compute the distance matrix between the persistence diagrams
     distMat = simple.TTKPersistenceDiagramDistanceMatrix(Input=prodRead)
     distMat.NumberofPairs = 50
