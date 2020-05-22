@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
+# pylint: disable=invalid-name, missing-docstring, import-error, too-many-locals
+
 import argparse
-import csv
 import pathlib
 import subprocess
 
