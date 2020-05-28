@@ -98,7 +98,7 @@ def generate_persistence_diagrams(args):
         print(">> Processed " + str(nc))
 
 
-def compute_distances(args):
+def compute_distances_and_clustering(args):
     """Compute distance matrix between persistence diagrams"""
 
     # read the Cinema Database index
@@ -113,8 +113,9 @@ def compute_distances(args):
     # load the filtered products (persistence diagrams) from the database
     prodRead = simple.TTKCinemaProductReader(Input=query)
 
-    # TODO use TTKPersistenceDiagramClustering here to cluster
-    # diagrams before computing the distance matrix
+    ###########################################
+    # DISTANCE MATRIX AND DIMENSION REDUCTION #
+    ###########################################
 
     # compute the distance matrix between the persistence diagrams
     distMat = simple.TTKPersistenceDiagramDistanceMatrix(Input=prodRead)
@@ -128,8 +129,52 @@ def compute_distances(args):
     dimRed.InputIsaDistanceMatrix = 1
     dimRed.UseAllCores = 0
 
+    ##############
+    # CLUSTERING #
+    ##############
+
+    # filter input
+    filterDiags = simple.TTKCinemaQuery(InputTable=query)
+    filterDiags.SQLStatement = """SELECT * FROM InputTable0
+WHERE Day >= 170 AND Day <= 190"""
+
+    cluster = simple.TTKPersistenceDiagramClustering(Input=filterDiags)
+    cluster.NumberOfClusters = 5  # one for each "iteration"
+    cluster.Maximalcomputationtimes = 100.0  # do it in less than 100s
+
+    #################################################
+    # MERGE CLUSTERING INTO REDUCED DISTANCE MATRIX #
+    #################################################
+
+    # convert clustering FieldData to vtkTable
+    ds2t = simple.TTKDataSetToTable(Input=cluster)
+    ds2t.DataAssociation = "Field"
+
+    mergeQuery = simple.TTKCinemaQuery(InputTable=[ds2t, dimRed])
+    # exclude distance matrix from the result, too many columns for SQLite
+    mergeQuery.ExcludecolumnswithaRegexp = 1
+    mergeQuery.Regexp = "Diagram.*"
+    mergeQuery.SQLStatement = """
+-- distance matrix tuples
+-- with dummy clustering data
+-- without clustering tuples
+SELECT dm.*, -1 AS ClusterId
+FROM InputTable1 AS dm
+LEFT OUTER JOIN InputTable0 AS cl
+USING (It, Day)
+WHERE cl.ClusterId is null
+
+UNION
+
+-- clustering tuples
+-- with distance matrix data
+SELECT dm.*, cl.ClusterId
+FROM InputTable1 AS dm
+JOIN InputTable0 AS cl
+USING (It, Day)"""
+
     # generate points from 3-dimensional coordinates
-    t2p = simple.TableToPoints(Input=dimRed)
+    t2p = simple.TableToPoints(Input=mergeQuery)
     t2p.XColumn = "Component_0"
     t2p.YColumn = "Component_1"
     t2p.ZColumn = "Component_2"
@@ -144,8 +189,9 @@ def compute_distances(args):
     hm.Regexp = "Diagram.*"
 
     # save output
-    simple.SaveData("mosq_distmat.vtu", Input=tetra)
-    simple.SaveData("mosq_heatmap.vtu", Input=hm)
+    simple.SaveData("disease_trajectories.vtu", Input=tetra)
+    simple.SaveData("disease_heatmap.vtu", Input=hm)
+    simple.SaveData("disease_distmat.csv", Input=dimRed)
 
 
 def main():
@@ -168,7 +214,7 @@ def main():
 
     cluster_pd = subparsers.add_parser("cluster")
     cluster_pd.add_argument("-c", "--cdb_dir", type=str, default=cdbdir)
-    cluster_pd.set_defaults(func=compute_distances)
+    cluster_pd.set_defaults(func=compute_distances_and_clustering)
 
     cli_args = parser.parse_args()
     cli_args.func(cli_args)
