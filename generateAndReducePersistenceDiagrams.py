@@ -204,7 +204,12 @@ USING (It, Day)"""
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=(
+            "Simulate the topological analysis performed "
+            "for the Mosquito-Borne Disease Use Case"
+        )
+    )
     subparsers = parser.add_subparsers()
 
     datadir = "input_dir"
@@ -228,7 +233,11 @@ def main():
     cluster_pd.set_defaults(func=compute_distances_and_clustering)
 
     cli_args = parser.parse_args()
-    cli_args.func(cli_args)
+    # force use of subcommand, display help without one
+    if "func" in cli_args.__dict__:
+        cli_args.func(cli_args)
+    else:
+        parser.parse_args(["--help"])
 
 
 if __name__ == "__main__":
