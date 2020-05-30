@@ -78,23 +78,32 @@ def generate_persistence_diagrams(args):
         slic = simple.Slice(Input=gauss)
         slic.SliceType = "Plane"
         slic.SliceType.Normal = [0.0, 0.0, 1.0]
-
-        # compute persistence diagram
-        persdiag = simple.TTKPersistenceDiagram(Input=slic)
-        persdiag.DebugLevel = 3
+        rsi = simple.ResampleToImage(Input=slic)
+        rsi.SamplingDimensions = [488, 590, 1]
 
         # add parameters as Field Data
-        arred = simple.TTKArrayEditor(Target=persdiag)
+        arred = simple.TTKArrayEditor(Target=rsi)
         arred.TargetAttribute = "Field Data"
         arred.DataString = "\n".join([",".join(tup) for tup in params.items()])
 
+        # store pre-processing result with topological compression
+        cinewriter0 = simple.TTKCinemaWriter(Input=rsi)
+        cinewriter0.DatabasePath = args.tcomp_cdb_dir
+        cinewriter0.Storeas = 2
+        cinewriter0.ForwardInput = False
+
+        # compute persistence diagram
+        persdiag = simple.TTKPersistenceDiagram(Input=rsi)
+        persdiag.DebugLevel = 3
+
         # save file in Cinema Database
-        cinewriter = simple.TTKCinemaWriter(Input=arred)
-        cinewriter.DatabasePath = args.cdb_dir
-        cinewriter.ForwardInput = False
+        cinewriter1 = simple.TTKCinemaWriter(Input=persdiag)
+        cinewriter1.DatabasePath = args.pdiags_cdb_dir
+        cinewriter1.ForwardInput = False
 
         # trigger the pipeline by saving the empty output of TTKCinemaWriter
-        simple.SaveData("empty.vtu", Input=cinewriter)
+        simple.SaveData("empty.vtu", Input=cinewriter0)
+        simple.SaveData("empty.vtu", Input=cinewriter1)
         print(">> Processed " + str(nc))
 
 
@@ -199,7 +208,8 @@ def main():
     subparsers = parser.add_subparsers()
 
     datadir = "input_dir"
-    cdbdir = "pdiags.cdb"
+    pdiags_cdbdir = "pdiags.cdb"
+    tcomp_cdbdir = "tcomp.cdb"
 
     fetchpars = subparsers.add_parser("fetch")
     fetchpars.add_argument("-u", "--username", type=str, required=True)
@@ -209,11 +219,12 @@ def main():
 
     generate_pd = subparsers.add_parser("generate")
     generate_pd.add_argument("-i", "--input_dir", type=str, default=datadir)
-    generate_pd.add_argument("-c", "--cdb_dir", type=str, default=cdbdir)
+    generate_pd.add_argument("-p", "--pdiags_cdb_dir", type=str, default=pdiags_cdbdir)
+    generate_pd.add_argument("-t", "--tcomp_cdb_dir", type=str, default=tcomp_cdbdir)
     generate_pd.set_defaults(func=generate_persistence_diagrams)
 
     cluster_pd = subparsers.add_parser("cluster")
-    cluster_pd.add_argument("-c", "--cdb_dir", type=str, default=cdbdir)
+    cluster_pd.add_argument("-p", "--pdiags_cdb_dir", type=str, default=pdiags_cdbdir)
     cluster_pd.set_defaults(func=compute_distances_and_clustering)
 
     cli_args = parser.parse_args()
