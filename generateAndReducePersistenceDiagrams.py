@@ -34,7 +34,7 @@ def generate_persistence_diagrams(args):
 
     inpdatadir = pathlib.Path(args.input_dir)
 
-    for nc in inpdatadir.glob("*.nc"):
+    for i, nc in enumerate(inpdatadir.glob("*.nc")):
         # parse simulation parameters from datasets names
         nc_params = nc.name.split(".")[0].split("_")
         Type = nc_params[0]
@@ -104,7 +104,9 @@ def generate_persistence_diagrams(args):
         cinewriter1.ForwardInput = False
 
         # trigger the pipeline by saving the empty output of TTKCinemaWriter
-        simple.SaveData("empty.vtu", Input=cinewriter0)
+        if i % 10 == 0:
+            # save compressed version every 10 cycles
+            simple.SaveData("empty.vtu", Input=cinewriter0)
         simple.SaveData("empty.vtu", Input=cinewriter1)
         print(">> Processed " + str(nc))
 
