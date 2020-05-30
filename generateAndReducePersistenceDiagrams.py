@@ -87,13 +87,15 @@ def generate_persistence_diagrams(args):
         arred.DataString = "\n".join([",".join(tup) for tup in params.items()])
 
         # store pre-processing result with topological compression
-        cinewriter0 = simple.TTKCinemaWriter(Input=rsi)
+        cinewriter0 = simple.TTKCinemaWriter(Input=arred)
         cinewriter0.DatabasePath = args.tcomp_cdb_dir
         cinewriter0.Storeas = 2
+        cinewriter0.ScalarField = "SplatterValues"
         cinewriter0.ForwardInput = False
 
         # compute persistence diagram
-        persdiag = simple.TTKPersistenceDiagram(Input=rsi)
+        persdiag = simple.TTKPersistenceDiagram(Input=arred)
+        persdiag.ScalarField = "SplatterValues"
         persdiag.DebugLevel = 3
 
         # save file in Cinema Database
@@ -111,7 +113,7 @@ def compute_distances_and_clustering(args):
     """Compute distance matrix between persistence diagrams"""
 
     # read the Cinema Database index
-    cineRead = simple.TTKCinemaReader(DatabasePath=args.cdb_dir)
+    cineRead = simple.TTKCinemaReader(DatabasePath=args.pdiags_cdb_dir)
 
     # perform SQL query on the Cinema Database index
     query = simple.TTKCinemaQuery(InputTable=cineRead)
@@ -120,14 +122,14 @@ def compute_distances_and_clustering(args):
     )
 
     # load the filtered products (persistence diagrams) from the database
-    prodRead = simple.TTKCinemaProductReader(Input=query)
+    prodRead0 = simple.TTKCinemaProductReader(Input=query)
 
     ###########################################
     # DISTANCE MATRIX AND DIMENSION REDUCTION #
     ###########################################
 
     # compute the distance matrix between the persistence diagrams
-    distMat = simple.TTKPersistenceDiagramDistanceMatrix(Input=prodRead)
+    distMat = simple.TTKPersistenceDiagramDistanceMatrix(Input=prodRead0)
     distMat.NumberofPairs = 50
 
     # use MDS to reduce the distance into a 3-dimensional space
@@ -147,8 +149,9 @@ def compute_distances_and_clustering(args):
     filterDiags.SQLStatement = """SELECT * FROM InputTable0
 WHERE Day >= 170 AND Day <= 190"""
 
-    cluster = simple.TTKPersistenceDiagramClustering(Input=filterDiags)
-    cluster.NumberOfClusters = 5  # one for each "iteration"
+    prodread1 = simple.TTKCinemaProductReader(Input=filterDiags)
+    cluster = simple.TTKPersistenceDiagramClustering(Input=prodread1)
+    cluster.Numberofclusters = 5  # one for each "iteration"
     cluster.Maximalcomputationtimes = 100.0  # do it in less than 100s
 
     #################################################
