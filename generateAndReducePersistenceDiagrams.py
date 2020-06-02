@@ -99,9 +99,7 @@ def compute_distances_and_clustering(args):
 
     # perform SQL query on the Cinema Database index
     query = simple.TTKCinemaQuery(InputTable=cineRead)
-    query.SQLStatement = (
-        "SELECT * FROM InputTable0"  # WHERE It='it2' OR It='it3' OR It='it4'"
-    )
+    query.SQLStatement = "SELECT * FROM InputTable0"
 
     # load the filtered products (persistence diagrams) from the database
     prodRead0 = simple.TTKCinemaProductReader(Input=query)
@@ -126,13 +124,7 @@ def compute_distances_and_clustering(args):
     # CLUSTERING #
     ##############
 
-    # filter input
-    filterDiags = simple.TTKCinemaQuery(InputTable=query)
-    filterDiags.SQLStatement = """SELECT * FROM InputTable0
-WHERE Day >= 170 AND Day <= 190"""
-
-    prodread1 = simple.TTKCinemaProductReader(Input=filterDiags)
-    cluster = simple.TTKPersistenceDiagramClustering(Input=prodread1)
+    cluster = simple.TTKPersistenceDiagramClustering(Input=prodRead0)
     cluster.Numberofclusters = 5  # one for each "iteration"
     cluster.Maximalcomputationtimes = 100.0  # do it in less than 100s
 
@@ -149,23 +141,12 @@ WHERE Day >= 170 AND Day <= 190"""
     mergeQuery.ExcludecolumnswithaRegexp = 1
     mergeQuery.Regexp = "Diagram.*"
     mergeQuery.SQLStatement = """
--- distance matrix tuples
--- with dummy clustering data
--- without clustering tuples
-SELECT dm.*, -1 AS ClusterId
-FROM InputTable1 AS dm
-LEFT OUTER JOIN InputTable0 AS cl
-USING (It, Day)
-WHERE cl.ClusterId is null
-
-UNION
-
 -- clustering tuples
 -- with distance matrix data
 SELECT dm.*, cl.ClusterId
 FROM InputTable1 AS dm
 JOIN InputTable0 AS cl
-USING (It, Day)"""
+USING (Name)"""
 
     # generate points from 3-dimensional coordinates
     t2p = simple.TableToPoints(Input=mergeQuery)
@@ -173,6 +154,7 @@ USING (It, Day)"""
     t2p.YColumn = "Component_1"
     t2p.ZColumn = "Component_2"
     t2p.KeepAllDataArrays = 1
+    t2p.a2DPoints = True
 
     # converts from vtkPolyData to vtkUnstructuredGrid
     tetra = simple.Tetrahedralize(Input=t2p)
@@ -183,16 +165,16 @@ USING (It, Day)"""
     hm.Regexp = "Diagram.*"
 
     # save output
-    simple.SaveData("disease_trajectories.vtu", Input=tetra)
-    simple.SaveData("disease_heatmap.vtu", Input=hm)
-    simple.SaveData("disease_distmat.csv", Input=dimRed)
+    simple.SaveData("fire_trajectories.vtu", Input=tetra)
+    simple.SaveData("fire_heatmap.vtu", Input=hm)
+    simple.SaveData("fire_distmat.csv", Input=dimRed)
 
 
 def main():
     parser = argparse.ArgumentParser(
         description=(
             "Simulate the topological analysis performed "
-            "for the Mosquito-Borne Disease Use Case"
+            "for the Forest Fire Use Case"
         )
     )
     subparsers = parser.add_subparsers()
