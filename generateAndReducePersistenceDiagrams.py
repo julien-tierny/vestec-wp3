@@ -34,81 +34,61 @@ def generate_persistence_diagrams(args):
 
     inpdatadir = pathlib.Path(args.input_dir)
 
-    for i, nc in enumerate(inpdatadir.glob("*.nc")):
-        # parse simulation parameters from datasets names
-        nc_params = nc.name.split(".")[0].split("_")
-        Type = nc_params[0]
-        It = "It" + nc_params[-3]
-        Day = nc_params[-1]
-        FieldName = "probability" if Type == "prob" else Type
-        params = {"Type": Type, "It": It, "Day": Day}
+    # group images by the form of the fire propagation
+    case = {
+        "t1": 0,
+        "t2": 1,
+        "t3": 2,
+        "t4": 3,
+        "t5": 3,
+        "t6": 1,
+        "t7": 1,
+        "t8": 1,
+        "t9": 1,
+        "t10": 2,
+    }
 
-        # use ParaView to read NetCDF files
-        mosq = simple.NetCDFReader(FileName=[str(nc)])
-        mosq.Dimensions = "(lat, lon)"
-        mosq.SphericalCoordinates = False
+    for tif in sorted(inpdatadir.glob("*.tif")):
+        # load TIFF image
+        fire = simple.TIFFReader(FileName=str(tif))
 
-        # transform NetCDF to vtkImageData
-        resample = simple.ResampleToImage(Input=mosq)
-        resample.SamplingDimensions = [244, 295, 1]
+        # "simulation parameters"
+        tifname = tif.name.split(".")[0]
+        params = {"Name": tifname, "CaseId": str(case.get(tifname, -1))}
 
-        # use TTKHarmonicField to generate missing pixel values
-        # without messing with topology
-        ttkId = simple.TTKIdentifiers(Input=resample)
+        # threshold to keep only the propagation map
+        thr = simple.Threshold(Input=fire)
+        thr.Scalars = ["POINTS", "Tiff Scalars"]
+        thr.ThresholdRange = [0.0, 8.0]
 
-        selection = simple.SelectPoints()
-        selection.QueryString = FieldName + " > 0"
-        selection.FieldType = "POINT"
-        extractSel = simple.ExtractSelection(Input=ttkId, Selection=selection)
+        # compute eigen functions of the mesh laplacian graph
+        eigen = simple.TTKEigenField(InputGeometry=simple.Tetrahedralize(thr))
+        eigen.Numberofeigenfunctions = 200
+        eigen.Computestatistics = 1
 
-        ttkHarm = simple.TTKHarmonicField(
-            InputGeometry=ttkId, InputConstraints=extractSel
-        )
-        ttkHarm.ConstraintValues = FieldName
-        ttkHarm.Solver = "Iterative"
+        # extract the sum of all eigen functions
+        extrComp = simple.ExtractComponent(Input=eigen)
+        extrComp.InputArray = ["POINTS", "Statistics"]
+        extrComp.Component = 3  # Sum
 
-        # more cleaning: use GaussianResampling to merge topological peaks
-        gauss = simple.GaussianResampling(Input=ttkHarm)
-        gauss.ResampleField = ["POINTS", "OutputHarmonicField"]
-        gauss.ResamplingGrid = [488, 590, 3]
-        gauss.GaussianSplatRadius = 0.02
-        gauss.GaussianExponentFactor = -10.0
-        gauss.SplatAccumulationMode = "Sum"
+        # compute persistence diagram
+        persdiag = simple.TTKPersistenceDiagram(Input=extrComp)
+        persdiag.ScalarField = "Result"
+        persdiag.DebugLevel = 3
 
-        slic = simple.Slice(Input=gauss)
-        slic.SliceType = "Plane"
-        slic.SliceType.Normal = [0.0, 0.0, 1.0]
-        rsi = simple.ResampleToImage(Input=slic)
-        rsi.SamplingDimensions = [488, 590, 1]
-
-        # add parameters as Field Data
-        arred = simple.TTKArrayEditor(Target=rsi)
+        # add file name as Field Data
+        arred = simple.TTKArrayEditor(Target=persdiag)
         arred.TargetAttribute = "Field Data"
         arred.DataString = "\n".join([",".join(tup) for tup in params.items()])
 
-        # store pre-processing result with topological compression
-        cinewriter0 = simple.TTKCinemaWriter(Input=arred)
-        cinewriter0.DatabasePath = args.tcomp_cdb_dir
-        cinewriter0.Storeas = 2
-        cinewriter0.ScalarField = "SplatterValues"
-        cinewriter0.ForwardInput = False
-
-        # compute persistence diagram
-        persdiag = simple.TTKPersistenceDiagram(Input=arred)
-        persdiag.ScalarField = "SplatterValues"
-        persdiag.DebugLevel = 3
-
         # save file in Cinema Database
-        cinewriter1 = simple.TTKCinemaWriter(Input=persdiag)
-        cinewriter1.DatabasePath = args.pdiags_cdb_dir
-        cinewriter1.ForwardInput = False
+        cinewriter = simple.TTKCinemaWriter(Input=arred)
+        cinewriter.DatabasePath = args.pdiags_cdb_dir
+        cinewriter.ForwardInput = False
 
         # trigger the pipeline by saving the empty output of TTKCinemaWriter
-        if i % 10 == 0:
-            # save compressed version every 10 cycles
-            simple.SaveData("empty.vtu", Input=cinewriter0)
-        simple.SaveData("empty.vtu", Input=cinewriter1)
-        print(">> Processed " + str(nc))
+        simple.SaveData("empty.vtu", Input=cinewriter)
+        print(">> Processed " + str(tif))
 
 
 def compute_distances_and_clustering(args):
