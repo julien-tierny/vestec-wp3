@@ -82,9 +82,11 @@ def generate_persistence_diagrams(args):
         extrComp = simple.ExtractComponent(Input=eigen)
         extrComp.InputArray = ["POINTS", "Statistics"]
         extrComp.Component = 3  # Sum
+        sfn = simple.TTKScalarFieldNormalizer(extrComp)
+        sfn.ScalarField = "Result"
 
         # compute persistence diagram
-        persdiag = simple.TTKPersistenceDiagram(Input=extrComp)
+        persdiag = simple.TTKPersistenceDiagram(Input=sfn)
         persdiag.ScalarField = "Result"
         persdiag.DebugLevel = 3
 
