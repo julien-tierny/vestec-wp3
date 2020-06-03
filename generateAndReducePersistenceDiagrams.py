@@ -6,6 +6,9 @@ import argparse
 import pathlib
 import subprocess
 
+import cv2
+import numpy as np
+
 from paraview import simple
 
 
@@ -49,6 +52,15 @@ def generate_persistence_diagrams(args):
     }
 
     for tif in sorted(inpdatadir.glob("*.tif")):
+        bak = pathlib.Path(str(tif) + ".bak")
+        if not bak.exists():
+            print("saved", tif)
+            tif.rename(bak)
+        img = cv2.imread(str(bak), cv2.IMREAD_ANYDEPTH)
+        k = np.ones((5, 5), np.uint8)
+        close = cv2.morphologyEx(img, cv2.MORPH_CLOSE, k)
+        cv2.imwrite(str(tif), close)
+
         # load TIFF image
         fire = simple.TIFFReader(FileName=str(tif))
 
