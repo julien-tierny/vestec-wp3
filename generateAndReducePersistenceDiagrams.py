@@ -72,9 +72,10 @@ def generate_persistence_diagrams(args):
         thr = simple.Threshold(Input=fire)
         thr.Scalars = ["POINTS", "Tiff Scalars"]
         thr.ThresholdRange = [0.0, 8.0]
+        thr = simple.Tetrahedralize(thr)
 
         # compute eigen functions of the mesh laplacian graph
-        eigen = simple.TTKEigenField(InputGeometry=simple.Tetrahedralize(thr))
+        eigen = simple.TTKEigenField(InputGeometry=thr)
         eigen.Numberofeigenfunctions = 200
         eigen.Computestatistics = 1
 
