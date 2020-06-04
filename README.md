@@ -1,10 +1,9 @@
-Topological Analysis of the Mosquito-Borne Diseases Simulator Output
-====================================================================
+Topological Analysis of the Forest Fire Simulator Output
+========================================================
 
 This repository gathers various software dependencies needed to apply
-Sorbonne Université's topological analysis on FBK's Mosquito-Borne
-Diseases data. You will find below a list of steps to reproduce our
-results.
+Sorbonne Université's topological analysis on Tecnosylva's Forest Fire
+data. You will find below a list of steps to reproduce our results.
 
 Software Dependencies
 ---------------------
@@ -91,18 +90,15 @@ Then, load the newer GCC 9.2:
 module load gcc/gcc-9.2.0/sled12.x86_64.gcc.release
 ```
 
-Fetch & analyse the Mosquito-Borne Disease data
------------------------------------------------
+Fetch & analyse the Forest Fire data
+------------------------------------
 
 A Python script named `generateAndReducePersistenceDiagrams.py` has
 been provided in this repository to perform the following computation steps:
 
-1. download the Mosquito-Borne Disease data from the VESTEC FTP server
-   (for now only the "probability" datasets are downloaded);
-2. for each dataset, perform some pre-processing to "reconstruct" the
-   missing data;
-3. compute a persistence diagram from this reconstructed
-   representation and store it in a Cinema Database;
+1. download the Forest Fire data from the VESTEC FTP server;
+2. compute a persistence diagram from these data and store it in a
+   Cinema Database;
 4. cluster these persistence diagrams, compute a distance matrix and
    reduce it with MDS to a 3D point cloud. A heat map is also
    generated from the distance matrix.
@@ -140,5 +136,6 @@ This task can take up to several tens of minutes depending on the
 available computational power. The results take the form of two VTK
 files:
 
-* `mosq_distmat.vtu` contains the distance matrix and the 3D point cloud and
-* `mosq_heatmap.vtu` contains a heat map of the distance matrix.
+* `fire_distmat.csv` contains the distance matrix;
+* `fire_trajectories.vtu` contains the 3D point cloud and
+* `fire_heatmap.vtu` contains a heat map of the distance matrix.
