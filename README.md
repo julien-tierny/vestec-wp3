@@ -29,8 +29,8 @@ Other dependencies required by OSPRay are:
   programming language adopting SPMD model
 * Intel Embree, a collection of high-performance ray tracing kernels
 
-Eigen, a C++ header-only linear algebra library, is required also by
-TTK to run on FBK's data.
+Eigen and Spectra, two C++ header-only linear algebra libraries, are
+also required by TTK to run on Tecnosylva's data.
 
 Such dependencies are downloaded as binaries directly when running the bash script.
 

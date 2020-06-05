@@ -91,11 +91,15 @@ cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/zfp \
 cmake --build . --target install --parallel "$NUM_BUILD_JOBS"
 
 
-### 5 FETCH EIGEN
+### 5 FETCH EIGEN AND SPECTRA
 wget https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
 tar xzf eigen-3.3.7.tar.gz
 mv eigen-3.3.7/ eigen/
 rm eigen-3.3.7.tar.gz
+wget https://github.com/yixuan/spectra/archive/v0.9.0.tar.gz
+tar xzf v0.9.0.tar.gz
+mv spectra-0.9.0/ spectra/
+rm v0.9.0.tar.gz
 
 
 ### 6 COMPILE TTK
@@ -111,6 +115,7 @@ cmake DCMAKE_C_FLAGS="-luuid" \
 	-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/ttk \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DEIGEN_DIR=eigen/cmake \
+	-DSPECTRA_INCLUDE_DIR=spectra/include \
 	$CURRENT_DIR/ttk/
 cmake --build . --target install --parallel "$NUM_BUILD_JOBS"
 export PV_PLUGIN_PATH=$INSTALL_DIR/ttk/lib64/ttk/paraview-plugin
