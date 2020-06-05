@@ -33,7 +33,8 @@ def fetch_data_from_ftp(args):
 
 
 def generate_persistence_diagrams(args):
-    """Generate Persistence Diagrams from FBK data and store them inside a Cinema Database"""
+    """Generate Persistence Diagrams from Tecnosylva's data and store them
+inside a Cinema Database"""
 
     inpdatadir = pathlib.Path(args.input_dir)
 
@@ -71,12 +72,12 @@ def generate_persistence_diagrams(args):
         # threshold to keep only the propagation map
         thr = simple.Threshold(Input=fire)
         thr.Scalars = ["POINTS", "Tiff Scalars"]
-        thr.ThresholdRange = [0.0, 8.0]
+        thr.ThresholdRange = [1.0, 8.0]
         thr = simple.Tetrahedralize(thr)
 
         # compute eigen functions of the mesh laplacian graph
         eigen = simple.TTKEigenField(InputGeometry=thr)
-        eigen.Numberofeigenfunctions = 200
+        eigen.Numberofeigenfunctions = 100
         eigen.Computestatistics = 1
 
         # extract the sum of all eigen functions
@@ -140,7 +141,7 @@ def compute_distances_and_clustering(args):
     ##############
 
     cluster = simple.TTKPersistenceDiagramClustering(Input=prodRead0)
-    cluster.Numberofclusters = 5  # one for each "iteration"
+    cluster.Numberofclusters = 4  # one for each "CaseId"
     cluster.Maximalcomputationtimes = 100.0  # do it in less than 100s
 
     #################################################
