@@ -34,6 +34,9 @@ also required by TTK to run on Tecnosylva's data.
 
 Such dependencies are downloaded as binaries directly when running the bash script.
 
+We also used OpenCV to perform some pre-processing on the
+data. Hopefully, this step will be integrated into TTK in a near
+future.
 
 Build (& Install) Everything
 ----------------------------
