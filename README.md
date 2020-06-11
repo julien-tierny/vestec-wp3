@@ -80,64 +80,51 @@ persistence diagrams at every simulation cycle:
 
 ```sh
 cd ipicmini
-mpirun \
-    -np 1 `# only one MPI process` \
-    build/iPICmini \
-    inputfiles/TaylorGreen.inp # input parameters file
+build/iPICmini inputfiles/GEM3D.inp
 ```
 
 The simulation parameters can be changed freely in the
-`inputfiles/TaylorGreen.inp` file. I was suggested to change the
-`Case` parameter from TaylorGreen{0,1,2,3} and to adapt the
-initial magnetic field `B0x` to 0.0185 for TaylorGreen0 to
-TaylorGreen2 (keep it a 0.032 for TaylorGreen3).
+`inputfiles/GEM3D.inp` file. I was suggested to change the `ns`
+parameter from 4 to 2 and to adapt the initial magnetic field `B0z`
+from 0.0 to 0.0195 (same value as `B0x`).
 
-Once the simulator is launched and after loading the TTK libraries
-(~1min), it will launch the simulation and store inside the `data/`
-subdirectory the persistence diagrams in the `pdiags.cdb` Cinema
-database. A topological compression of the simulation output is also
-stored (every 10 cycles) inside the `tcomp.cdb` Cinema database in the
-`data/` directory. See the Python Catalyst script
-`inputfiles/storePersistenceDiagrams.py` for more information.
+The simulation will generate and store data inside the `data/`
+subdirectory, persistence diagrams for the magnitude of the magnetic
+field B and the z component Bz in the `pdiags.cdb` Cinema Database
+every cycle and topological compression of simulation outputs (every
+10 cycles) inside the `tcomp.cdb` Cinema Database. See the Python
+Catalyst script `inputfiles/storePersistenceDiagrams.py` for more
+information.
 
-Once the simulation has ended (after 2000 cycles), another pipeline is
-launched to cluster the persistence diagrams and store them in a
-2D point cloud VTU: see `inputfiles/clusterDiags.py`.
+Once the simulation has ended (after 2500 cycles), it is possible to
+modify the simulation parameters (as described above) to generate more
+persistence diagrams.
 
-Test the clustering on pre-computed inputs
-------------------------------------------
+To reduce the persistence diagrams to a 3D point cloud and cluster the
+last persistence diagrams per simulation run, another Python script is
+available in the simulator submodule. To run it:
 
-Some persistence diagrams have been pre-computed and uploaded onto the
-[VESTEC FTP server](ftp://ftp.dlr.de/datasets/persistence_diagrams/).
-The Space Weather simulator has been run for 200 cycles four times,
-one for every TaylorGreen case parameter (from TaylorGreen0 to
-TaylorGreen3).
- The two Cinema databases `pdiags.cdb` and `tcomp.cdb`
-contain respectively:
-* persistence diagrams taken every 10 cycles and
-* topological compressed outputs (using ZFP) taken every 50 cycles.
+```sh
+cd ipicmini
+pvpython inputfiles/clusterDiags.py
+```
 
-The ParaView state file `clusterDiags.pvsm` at the root of this
-repository can be used to cluster those pre-computed data. Just fetch
-the two Cinema databases, put them in the same folder as the state
-file and run the pipeline with ParaView.
+It will generate two files inside the `ipicmini/data/` subdirectory:
+* a CSV file named `spaceWeather_distmat.csv` containing (among
+  others) the distance matrix between all persistence diagrams
+* a VTU file named `spaceWeather_trajectories.vtu` with the point
+  cloud generated from the dimension reduction of the distance
+  matrix.
 
-This ParaView state file opens four layouts representing the following
-steps in our analysis pipeline:
+The latter represents the trajectory of each simulation run, in the
+abstract space of the persistence diagrams. Each point also points to
+the file containing the corresponding persistence diagram inside the
+`ipicmini/data/pdiags.cdb` Cinema Database. From the simulation
+parameters and the TimeStep value, one can also retrieve the
+corresponding compressed version inside the `ipicmini/data/tcomp.cdb`
+(if TimeStep is divisible by 10).
 
-1. the first layout represents, on the left, the clustering of the
-   persistence diagrams in four clusters, disposed in circles around
-   the cluster centroid. The right panel should display the distance
-   matrix between those diagrams with the distance metric used for the
-   clustering.
-2. in the second layout, two identical point clouds with a different
-   coloring show the diagrams distance matrix reduced into a 2D
-   plane. On the left, the coloring represents the four different
-   parameter sets (TaylorGreen0 to TaylorGreen3) used for the four
-   simulation runs. On the right, the attached cluster id.
-3. in the third panel, we selected three points in the point cloud. On
-   the right panels, we show the corresponding persistence diagrams
-   and (if available) we load the compressed simulation output.
-4. the last layout is a display of the content of our two Cinema
-   databases: on the left, the persistence diagrams, on the right, the
-   compressed outputs.
+Further post-processing of this point cloud might include associating
+the ttkStringArrayConverter, the Threshold and the ttkPointSetToCurve
+filters to manipulate simulation run trajectories instead of
+individual points.
