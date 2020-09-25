@@ -43,10 +43,10 @@ gmake install
 ### 2 INSTALL OSPRAY
 cd $CURRENT_DIR
 ### 2a DOWNLOAD ISPC COMPILER
-wget https://sourceforge.net/projects/ispcmirror/files/v1.12.0/ispc-v1.12.0-linux.tar.gz
-tar xvzf ispc-v1.12.0-linux.tar.gz
-mv ispc-v1.12.0-linux/ ispc/
-rm tar xvzf ispc-v1.12.0-linux.tar.gz
+wget https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
+tar xvzf ispc-v1.14.1-linux.tar.gz
+mv ispc-v1.14.1-linux/ ispc/
+rm ispc-v1.14.1-linux.tar.gz
 ### 2b DOWNLOAD EMBREE LIBRARY
 wget https://github.com/embree/embree/releases/download/v3.8.0/embree-3.8.0.x86_64.linux.tar.gz
 tar xzf embree-3.8.0.x86_64.linux.tar.gz
