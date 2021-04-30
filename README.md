@@ -1,6 +1,6 @@
 # VESTEC-WP3: Companion Demonstrator for Deliverable D3.3
 
-## Presentation
+## I - Presentation
 This repository constitutes the companion demonstrator for the deliverable
 D3.3: Clustering of Topological Proxies. 
 
@@ -48,8 +48,8 @@ Persistence diagrams from the whole simulation are also reduced to a 3D point
 cloud using Multi-Dimensional Scaling (MDS) on the Wasserstein distance matrix
 between the members of the whole ensemble.
 
-## Instructions
-### Installation of ParaView and TTK
+## II - Instructions
+### 1. Installation of ParaView and TTK
 
 We will use the 0.9.9 release version of TTK, which is packaged with ParaView 5.8.
 Download the packaged binary from the TTK website:
@@ -65,12 +65,12 @@ $ sudo apt install ./ttk-paraview-ubuntu-20.04.deb
 $ sudo apt install ./ttk-0.9.9-ubuntu-20.04.deb
 ```
 
-### Clustering of precomputed persistence diagrams
+### 2. Clustering of precomputed persistence diagrams
 
-### In-situ pipeline for the Space Weather use case with ipicmini
+### 3. In-situ pipeline for the Space Weather use case with ipicmini
 the `ipicmini` folder contains the source code for the space weather
 simulations.
-#### Build the simulator
+#### a. Build the simulator
 Move to the `space_weather_in-situ` folder:
 ```bash
 $ cd space_weather_in-situ
@@ -83,4 +83,34 @@ Then launch the script `make.sh` in order to build ipicmini:
 ```bash
 $ ./make.sh
 ```
+#### b. Run the program
+The `launch_runs.sh` script will run the 4 simulation runs with different
+set of input parameters (two different values of the initial magnetic field and
+two different ionic populations). For each time step of each simulation, the
+persistence diagram of the magnitude of the magnetic field will be computed
+and stored in a cinema database, in the `space_weather_in-situ/data/` folder.
 
+Additionally, the script will run the post-processing phase of clustering.
+
+Run the script to generate the results (this will take a long time):
+```bash
+$ ./launch_runs.sh
+```
+
+#### c. Visualize the results
+
+Use ParaView to visualize the results. 
+
+The previous script created a file
+"trajectories.vtu", where each persistence diagram computed in-situ is represented by a 
+point embedded in 3D. The embedding was created by computing the matrix of the
+Wasserstein distance between the diagrams, and performing Multi-Dimensional
+Scaling. Both operations were realized with TTK.
+
+```bash
+$ paraview trajectories.vtu
+```
+The four simulation runs can clearly be distinguishable. Color the output by
+CaseName or ClusterId to see respectively the ground truth classification (1
+cluster per run) and the result of the topological clustering on the later
+diagrams.
