@@ -48,6 +48,8 @@ Persistence diagrams from the whole simulation are also reduced to a 3D point
 cloud using Multi-Dimensional Scaling (MDS) on the Wasserstein distance matrix
 between the members of the whole ensemble.
 
+
+
 ## II - Instructions
 ### 1. Installation of ParaView and TTK
 
