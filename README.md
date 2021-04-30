@@ -88,8 +88,8 @@ Alternatively, the result of the clustering is printed in the console output:
 [PersistenceDiagramClustering] Complete ...................... [0.281s|12T|100%]
 ```
 The index of the diagrams in each cluster is given by the order of the diagram
-in the input cinema database. In can be found in the file `precomputed_diagrams/wildfire/pdiags.cdb/data.csv`
-in the case of the *wildfire* usecase:
+in the input cinema database. In the case of the *wildfire* usecase, it can be
+found in the file `precomputed_diagrams/wildfire/pdiags.cdb/data.csv`:
 ```
 CaseId,Name,TimeValue,FILE
 1,T2,0,data/1_T2_0.vtu
@@ -105,7 +105,7 @@ CaseId,Name,TimeValue,FILE
 In this example, as the first column denotes the ground truth classification,
 the clustering printed above is correct.
 
-#### with Python
+#### With Python
 Move to the `clustering_scripts` folder and launch one the Python scripts to
 perform the clustering with pvpython. For instance for the *mosquito-borne
 disease* data set:
