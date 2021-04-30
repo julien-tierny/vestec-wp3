@@ -56,8 +56,10 @@ Download the packaged binary from the TTK website:
 $ wget https://github.com/topology-tool-kit/ttk/releases/download/0.9.9/ttk-0.9.9-ubuntu-20.04.deb
 $ wget https://github.com/topology-tool-kit/ttk-paraview/releases/download/v5.8.1/ttk-paraview-ubuntu-20.04.deb
 ```
-And install the .deb packages, ParaView **then** TTK:
+And install the .deb packages, ParaView **then** TTK. It is best to update the
+packages information prior to the installation:
 ```bash
+$ sudo apt update
 $ sudo apt install ./ttk-paraview-ubuntu-20.04.deb
 $ sudo apt install ./ttk-0.9.9-ubuntu-20.04.deb
 ```
@@ -65,3 +67,16 @@ $ sudo apt install ./ttk-0.9.9-ubuntu-20.04.deb
 ## Clustering of precomputed persistence diagrams
 
 ## In-situ pipeline for the Space Weather use case with ipicmini
+Move to the `space_weather_in-situ` folder:
+```bash
+$ cd space_weather_in-situ
+```
+Install the required dependencies to build `ipicmini`, the simulator interfaced with Catalyst:
+```bash
+$ sudo apt install cmake libopenmpi-dev
+```
+Then launch the script `make.sh` in order to build ipicmini:
+```bash
+$ ./make.sh
+```
+
