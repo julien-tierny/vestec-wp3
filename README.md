@@ -88,10 +88,7 @@ Alternatively, the result of the clustering is printed in the console output:
 [PersistenceDiagramClustering] Complete ...................... [0.281s|12T|100%]
 ```
 The index of the diagrams in each cluster is given by the order of the diagram
-in the input cinema database. In can be found in the file 
-```
-precomputed_diagrams/wildfire/pdiags.cdb/data.csv
-```
+in the input cinema database. In can be found in the file `precomputed_diagrams/wildfire/pdiags.cdb/data.csv`
 in the case of the *wildfire* usecase:
 ```
 CaseId,Name,TimeValue,FILE
@@ -104,8 +101,22 @@ CaseId,Name,TimeValue,FILE
 3,T4,7,data/3_T4_7.vtu
 3,T5,8,data/3_T5_8.vtu
 0,T1,9,data/0_T1_9.vtu
-
 ```
+In this example, as the first column denotes the ground truth classification,
+the clustering printed above is correct.
+
+#### with Python
+Move to the `clustering_scripts` folder and launch one the Python scripts to
+perform the clustering with pvpython. For instance for the *mosquito-borne
+disease* data set:
+```bash
+$ cd clustering_scripts
+$ pvpython clusterDiags_disease.py
+```
+The result of the clustering is printed in the terminal.
+Alternatively, the files `disease_clustered_diagrams.vtu` and
+`disease_centroids.vtu` were created, and can be used to visualize the result
+of the clustering in ParaView.
 
 ### 3. In-situ pipeline for the Space Weather use case with ipicmini
 The `ipicmini` folder contains the source code for the space weather simulations.
