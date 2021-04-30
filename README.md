@@ -5,8 +5,9 @@ This repository constitutes the companion demonstrator for the deliverable
 D3.3: Clustering of Topological Proxies. 
 
 It contains the data and instructions needed to perform a topological clustering of three
-ensemble data sets from the three VESTEC use cases
-(*wildfire*, *mosquito-borne disease*, and *space weather*) resulting from
+ensemble data sets from the three VESTEC use cases on **Ubuntu 20.04**.
+The three ensemble data sets
+(*wildfire*, *mosquito-borne disease*, and *space weather*) result from
 numerical simulations.
 Specifically, the purpose of our topological clustering algorithm is to
 operate on an ensemble of persistence diagrams, computed in an **in-situ**
