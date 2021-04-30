@@ -68,8 +68,7 @@ $ sudo apt install ./ttk-0.9.9-ubuntu-20.04.deb
 ### 2. Clustering of precomputed persistence diagrams
 
 ### 3. In-situ pipeline for the Space Weather use case with ipicmini
-the `ipicmini` folder contains the source code for the space weather
-simulations.
+The `ipicmini` folder contains the source code for the space weather simulations.
 #### a. Build the simulator
 Move to the `space_weather_in-situ` folder:
 ```bash
@@ -102,15 +101,15 @@ $ ./launch_runs.sh
 Use ParaView to visualize the results. 
 
 The previous script created a file
-"trajectories.vtu", where each persistence diagram computed in-situ is represented by a 
+`spaceWeather_trajectories.vtu`, where each persistence diagram computed in-situ is represented by a 
 point embedded in 3D. The embedding was created by computing the matrix of the
 Wasserstein distance between the diagrams, and performing Multi-Dimensional
 Scaling. Both operations were realized with TTK.
 
 ```bash
-$ paraview trajectories.vtu
+$ paraview spaceWeather_trajectories.vtu
 ```
-The four simulation runs can clearly be distinguishable. Color the output by
+The four simulation runs can clearly be distinguished. Color the output by
 CaseName or ClusterId to see respectively the ground truth classification (1
 cluster per run) and the result of the topological clustering on the later
 diagrams.
