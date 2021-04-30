@@ -24,7 +24,7 @@ based on the input set of parameters of the corresponding simuation run.
 
 ### Clustering on precomputed data
 Precomputed persistence diagrams for the three use cases are available in the
-`precomputed_diagrams` folder and are stored in cinema databases.
+`precomputed_diagrams` folder. They are stored in cinema databases.
 
 Below are instructions to apply our clustering method to these three precomputed ensemble of persistence diagrams.
 The clustering is performed with the Topology Toolkit (TTK: https://topology-tool-kit.github.io/) used as a ParaView plugin.
