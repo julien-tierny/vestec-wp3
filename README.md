@@ -68,6 +68,44 @@ $ sudo apt install ./ttk-0.9.9-ubuntu-20.04.deb
 ```
 
 ### 2. Clustering of precomputed persistence diagrams
+#### With ParaView
+Move to the `paraview_states` folder and launch one of the state files to run
+the clustering and visualize the result:
+```bash
+$ cd paraview_states
+$ paraview clustering_wildfire_precomputed_data.pvsm
+```
+The clustering result is display in ParaView (top view). The botton view
+presents the corresponding ground truth in a grid layout.
+
+Alternatively, the result of the clustering is printed in the console output:
+```bash
+[PersistenceDiagramClustering] Clustering result:
+[PersistenceDiagramClustering]  Cluster 0 = {0, 1, 2, 3}
+[PersistenceDiagramClustering]  Cluster 1 = {8}
+[PersistenceDiagramClustering]  Cluster 2 = {4, 5}
+[PersistenceDiagramClustering]  Cluster 3 = {6, 7}
+[PersistenceDiagramClustering] Complete ...................... [0.281s|12T|100%]
+```
+The index of the diagrams in each cluster is given by the order of the diagram
+in the input cinema database. In can be found in the file 
+```
+precomputed_diagrams/wildfire/pdiags.cdb/data.csv
+```
+in the case of the *wildfire* usecase:
+```
+CaseId,Name,TimeValue,FILE
+1,T2,0,data/1_T2_0.vtu
+1,T7,2,data/1_T7_2.vtu
+1,T8,3,data/1_T8_3.vtu
+1,T9,4,data/1_T9_4.vtu
+2,T3,5,data/2_T3_5.vtu
+2,T10,6,data/2_T10_6.vtu
+3,T4,7,data/3_T4_7.vtu
+3,T5,8,data/3_T5_8.vtu
+0,T1,9,data/0_T1_9.vtu
+
+```
 
 ### 3. In-situ pipeline for the Space Weather use case with ipicmini
 The `ipicmini` folder contains the source code for the space weather simulations.
