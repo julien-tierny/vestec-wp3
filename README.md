@@ -79,7 +79,7 @@ The clustering result is display in ParaView (top view). The botton view
 presents the corresponding ground truth in a grid layout.
 
 Alternatively, the result of the clustering is printed in the console output:
-```bash
+```console
 [PersistenceDiagramClustering] Clustering result:
 [PersistenceDiagramClustering]  Cluster 0 = {0, 1, 2, 3}
 [PersistenceDiagramClustering]  Cluster 1 = {8}
