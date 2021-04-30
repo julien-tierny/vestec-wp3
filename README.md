@@ -50,6 +50,18 @@ between the members of the whole ensemble.
 
 ## Installation of TTK and ParaView
 
+We will use the 0.9.9 release version of TTK, which is packaged with ParaView 5.8.
+Download the packaged binary from the TTK website:
+```bash
+$ wget https://github.com/topology-tool-kit/ttk/releases/download/0.9.9/ttk-0.9.9-ubuntu-20.04.deb
+$ wget https://github.com/topology-tool-kit/ttk-paraview/releases/download/v5.8.1/ttk-paraview-ubuntu-20.04.deb
+```
+And install the .deb packages, ParaView **then** TTK:
+```bash
+$ sudo apt install ./ttk-paraview-ubuntu-20.04.deb
+$ sudo apt install ./ttk-0.9.9-ubuntu-20.04.deb
+```
+
 ## Clustering of precomputed persistence diagrams
 
 ## In-situ pipeline for the Space Weather use case with ipicmini
