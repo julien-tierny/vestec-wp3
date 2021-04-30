@@ -1,6 +1,5 @@
 CaseId,Name,TimeValue,FILE
 1,T2,0,data/1_T2_0.vtu
-1,T6,1,data/1_T6_1.vtu
 1,T7,2,data/1_T7_2.vtu
 1,T8,3,data/1_T8_3.vtu
 1,T9,4,data/1_T9_4.vtu
