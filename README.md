@@ -113,5 +113,5 @@ $ paraview spaceWeather_trajectories.vtu
 ```
 The four simulation runs can clearly be distinguished. Color the output by
 CaseName or ClusterId to see respectively the ground truth classification (1
-cluster per run) and the result of the topological clustering on the later
+cluster per run) or the result of the topological clustering on the later
 diagrams.
