@@ -51,6 +51,11 @@ between the members of the whole ensemble.
 
 
 ## II - Instructions
+
+**Important: The following instructions are designed for a vanilla
+installation of Ubuntu 20.04. They were *not* tested for a different OS or
+Linux distribution.**
+
 ### 1. Installation of ParaView and TTK
 
 We will use the 0.9.9 release version of TTK, which is packaged with ParaView 5.8.
