@@ -48,7 +48,8 @@ Persistence diagrams from the whole simulation are also reduced to a 3D point
 cloud using Multi-Dimensional Scaling (MDS) on the Wasserstein distance matrix
 between the members of the whole ensemble.
 
-## Installation of TTK and ParaView
+## Instructions
+### Installation of ParaView and TTK
 
 We will use the 0.9.9 release version of TTK, which is packaged with ParaView 5.8.
 Download the packaged binary from the TTK website:
@@ -64,9 +65,12 @@ $ sudo apt install ./ttk-paraview-ubuntu-20.04.deb
 $ sudo apt install ./ttk-0.9.9-ubuntu-20.04.deb
 ```
 
-## Clustering of precomputed persistence diagrams
+### Clustering of precomputed persistence diagrams
 
-## In-situ pipeline for the Space Weather use case with ipicmini
+### In-situ pipeline for the Space Weather use case with ipicmini
+the `ipicmini` folder contains the source code for the space weather
+simulations.
+#### Build the simulator
 Move to the `space_weather_in-situ` folder:
 ```bash
 $ cd space_weather_in-situ
