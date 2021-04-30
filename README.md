@@ -154,8 +154,8 @@ Use ParaView to visualize the results.
 The previous script created a file
 `spaceWeather_trajectories.vtu`, where each persistence diagram computed in-situ is represented by a 
 point embedded in 3D. The embedding was created by computing the matrix of the
-Wasserstein distance between the diagrams, and performing Multi-Dimensional
-Scaling. Both operations were realized with TTK.
+Wasserstein distance between the diagrams, and applying Multi-Dimensional
+Scaling. Both operations were performed with TTK.
 
 ```bash
 $ paraview spaceWeather_trajectories.vtu
