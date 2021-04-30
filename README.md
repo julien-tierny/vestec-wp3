@@ -54,9 +54,9 @@ between the members of the whole ensemble.
 
 ## II - Instructions
 
-**Important: The following instructions are designed for a vanilla
-installation of Ubuntu 20.04. They were *not* tested for a different OS or
-Linux distribution.**
+**Important:** The following instructions are designed for a vanilla
+installation of **Ubuntu 20.04**. They were ***not*** tested for a different OS or
+Linux distribution.
 
 ### 1. Installation of ParaView and TTK
 
