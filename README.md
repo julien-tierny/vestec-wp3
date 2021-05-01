@@ -87,6 +87,10 @@ $ sudo apt update
 $ sudo apt install ./ttk-paraview-ubuntu-20.04.deb
 $ sudo apt install ./ttk-0.9.9-ubuntu-20.04.deb
 ```
+You can now delete the .deb files:
+```bash
+$ rm ./ttk-paraview-ubuntu-20.04.deb ./ttk-0.9.9-ubuntu-20.04.deb
+```
 
 ### 2. Clustering of precomputed persistence diagrams
 #### With ParaView
