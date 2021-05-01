@@ -75,7 +75,7 @@ $ cd vestec-wp3/demonstrator
 ### 1. Installation of ParaView and TTK
 
 We will use the 0.9.9 release version of TTK, which is packaged with ParaView 5.8.
-Download the packaged binary from the TTK website:
+Download the binary packages from the TTK website:
 ```bash
 $ wget https://github.com/topology-tool-kit/ttk/releases/download/0.9.9/ttk-0.9.9-ubuntu-20.04.deb
 $ wget https://github.com/topology-tool-kit/ttk-paraview/releases/download/v5.8.1/ttk-paraview-ubuntu-20.04.deb
