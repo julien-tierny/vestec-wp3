@@ -58,6 +58,14 @@ between the members of the whole ensemble.
 installation of **Ubuntu 20.04**. They were ***not*** tested for a different OS or
 Linux distribution.
 
+### 0. Clone the repository
+Install git and clone the repository:
+```bash
+$ sudo apt update
+$ sudo apt install git
+$ git clone https://github.com/julien-tierny/vestec-wp3.git
+$ cd vestec-wp3/
+```
 ### 1. Installation of ParaView and TTK
 
 We will use the 0.9.9 release version of TTK, which is packaged with ParaView 5.8.
