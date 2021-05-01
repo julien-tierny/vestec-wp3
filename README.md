@@ -64,8 +64,13 @@ Install git and clone the repository:
 $ sudo apt update
 $ sudo apt install git
 $ git clone https://github.com/julien-tierny/vestec-wp3.git
-$ cd vestec-wp3/
 ```
+Move to the created foler and get to the `demonstrator_D3.3` branch:
+```bash
+$ cd vestec-wp3/
+$ git checkout demonstrator_D3.3
+```
+
 ### 1. Installation of ParaView and TTK
 
 We will use the 0.9.9 release version of TTK, which is packaged with ParaView 5.8.
