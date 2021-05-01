@@ -180,7 +180,7 @@ Scaling. Both operations were performed with TTK.
 ```bash
 $ paraview spaceWeather_trajectories.vtu
 ```
-The four simulation runs can clearly be distinguished. Color the output by
-CaseName or ClusterId to see respectively the ground truth classification (1
+The four simulation runs can clearly be distinguished. Color the output with
+the **Point Data** fields `Case_Field_B0_ns` or `ClusterId` to see respectively the ground truth classification (1
 cluster per run) or the result of the topological clustering on the later
 diagrams.
