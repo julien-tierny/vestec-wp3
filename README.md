@@ -59,17 +59,17 @@ installation of **Ubuntu 20.04**. They were ***not*** tested for a different OS 
 Linux distribution.
 
 ### 0. Clone the repository
-Launch the followin commands to install `git` and clone the repository (omit
+Launch the following commands to install `git` and clone the
+`demonstrator_D.3.3` branch of the **vestec-wp3** repository (omit
 the `$` character):
 ```bash
 $ sudo apt update
 $ sudo apt install git
-$ git clone https://github.com/julien-tierny/vestec-wp3.git
+$ git clone https://github.com/julien-tierny/vestec-wp3.git -b demonstrator_D.3.3
 ```
-Move to the created foler and get to the `demonstrator_D3.3` branch:
+Move to the `demonstrator` folder:
 ```bash
-$ cd vestec-wp3/
-$ git checkout demonstrator_D3.3
+$ cd vestec-wp3/demonstrator
 ```
 
 ### 1. Installation of ParaView and TTK
