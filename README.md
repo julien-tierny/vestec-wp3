@@ -59,7 +59,8 @@ installation of **Ubuntu 20.04**. They were ***not*** tested for a different OS 
 Linux distribution.
 
 ### 0. Clone the repository
-Install git and clone the repository:
+Launch the followin commands to install `git` and clone the repository (omit
+the `$` character):
 ```bash
 $ sudo apt update
 $ sudo apt install git
