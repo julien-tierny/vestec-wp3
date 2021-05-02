@@ -136,7 +136,7 @@ perform the clustering with pvpython. For instance for the *mosquito-borne
 disease* data set:
 ```bash
 $ cd clustering_scripts
-$ pvpython clusterDiags_disease.py
+$ python3 clusterDiags_disease.py
 ```
 The result of the clustering is printed in the terminal.
 Alternatively, the files `disease_clustered_diagrams.vtu` and
