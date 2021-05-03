@@ -13,7 +13,10 @@ numerical simulations.
 Specifically, the purpose of our topological clustering algorithm is to
 operate on an ensemble of persistence diagrams, computed in an **in-situ**
 fashion during the numerical simulation.
+### Video
+We provide a video that demonstrates the usage of the code, data and instructions provided in this repository. 
 
+https://user-images.githubusercontent.com/42967827/116846164-3f1b3c80-abd7-11eb-8fe2-279602b5e533.mp4
 ### Data
 The data was thoroughly described in the deliverable D3.3.
 
